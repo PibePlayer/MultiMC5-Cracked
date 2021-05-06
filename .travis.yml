@@ -1,0 +1,7 @@
+language: cpp
+os: windows
+
+before_install:
+  - curl https://download.qt.io/new_archive/qt/5.6/5.6.3/qt-opensource-windows-x86-mingw492-5.6.3.exe --output installer.exe
+  - curl https://gist.githubusercontent.com/PibePlayer/cf6bd0a9f7e4d51e3e618ceedfba4b94/raw/09cb1415952b914f1567ce935d4618c396aec340/qt-installer-noninteractive.qs --output nonInteractive.qs
+  - installer.exe -v --script nonInteractive.qs --silent
