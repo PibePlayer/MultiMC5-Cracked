@@ -1,4 +1,5 @@
 os: windows
+language: generic
 
 jobs:
   include:
