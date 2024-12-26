@@ -16,10 +16,6 @@ QString XboxUserStep::describe() {
 }
 
 
-void XboxUserStep::rehydrate() {
-    // NOOP, for now. We only save bools and there's nothing to check.
-}
-
 void XboxUserStep::perform() {
     QString xbox_auth_template = R"XXX(
 {

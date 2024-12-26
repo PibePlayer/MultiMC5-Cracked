@@ -29,6 +29,7 @@
 #include "Usable.h"
 #include "AccountData.h"
 #include "QObjectPtr.h"
+#include "skins/SkinTypes.h"
 
 class Task;
 class AccountTask;
@@ -82,6 +83,10 @@ public: /* manipulation */
 
     shared_qobject_ptr<AccountTask> refresh();
 
+    shared_qobject_ptr<AccountTask> createMinecraftProfile(const QString& profileName);
+
+    shared_qobject_ptr<AccountTask> setSkin(Skins::Model model, QByteArray texture, const QString& capeUUID);
+
     shared_qobject_ptr<AccountTask> currentTask();
 
 public: /* queries */
@@ -89,8 +94,8 @@ public: /* queries */
         return data.internalId;
     }
 
-    QString accountDisplayString() const {
-        return data.accountDisplayString();
+    QString gamerTag() const {
+        return data.gamerTag();
     }
 
     QString accessToken() const {
@@ -103,6 +108,10 @@ public: /* queries */
 
     QString profileName() const {
         return data.profileName();
+    }
+
+    QString xid() const {
+        return data.xid();
     }
 
     bool isActive() const;
@@ -133,8 +142,14 @@ public: /* queries */
 
     QPixmap getFace() const;
 
+    QByteArray getSkin() const;
+    QString getCurrentCape() const;
+    Skins::Model getSkinModel() const;
+
+
     //! Returns the current state of the account
     AccountState accountState() const;
+    QString accountStateText() const;
 
     AccountData * accountData() {
         return &data;
@@ -148,6 +163,9 @@ public: /* queries */
         return data.lastError();
     }
 
+    void updateCapeCache() const;
+
+    void replaceDataWith(MinecraftAccountPtr other);
 signals:
     /**
      * This signal is emitted when the account changes

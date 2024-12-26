@@ -19,10 +19,11 @@ public:
 public slots:
     void get(const QNetworkRequest &req, int timeout = 60*1000);
     void post(const QNetworkRequest &req, const QByteArray &data, int timeout = 60*1000);
-
+    void post(const QNetworkRequest &req, class QHttpMultiPart *multipart, int timeout = 60*1000);
+    void put(const QNetworkRequest &req, const QByteArray &data, int timeout = 60*1000);
+    void deleteResource(const QNetworkRequest &req, int timeout = 60*1000);
 
 signals:
-
     /// Emitted when a request has been completed or failed.
     void finished(QNetworkReply::NetworkError error, QByteArray data, QList<QNetworkReply::RawHeaderPair> headers);
 
@@ -30,7 +31,6 @@ signals:
     void uploadProgress(qint64 bytesSent, qint64 bytesTotal);
 
 protected slots:
-
     /// Handle request finished.
     void onRequestFinished();
 

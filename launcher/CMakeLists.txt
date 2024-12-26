@@ -218,16 +218,13 @@ set(MINECRAFT_SOURCES
     minecraft/auth/flows/MSA.cpp
     minecraft/auth/flows/MSA.h
 
+    # Auth steps
     minecraft/auth/steps/EntitlementsStep.cpp
     minecraft/auth/steps/EntitlementsStep.h
-    minecraft/auth/steps/ForcedMigrationStep.cpp
-    minecraft/auth/steps/ForcedMigrationStep.h
     minecraft/auth/steps/GetSkinStep.cpp
     minecraft/auth/steps/GetSkinStep.h
     minecraft/auth/steps/LauncherLoginStep.cpp
     minecraft/auth/steps/LauncherLoginStep.h
-    minecraft/auth/steps/MigrationEligibilityStep.cpp
-    minecraft/auth/steps/MigrationEligibilityStep.h
     minecraft/auth/steps/MinecraftProfileStep.cpp
     minecraft/auth/steps/MinecraftProfileStep.h
     minecraft/auth/steps/MSAStep.cpp
@@ -238,6 +235,14 @@ set(MINECRAFT_SOURCES
     minecraft/auth/steps/XboxProfileStep.h
     minecraft/auth/steps/XboxUserStep.cpp
     minecraft/auth/steps/XboxUserStep.h
+
+    # API call steps
+    minecraft/auth/steps/SetSkinStep.cpp
+    minecraft/auth/steps/SetSkinStep.h
+    minecraft/auth/steps/SetCapeStep.cpp
+    minecraft/auth/steps/SetCapeStep.h
+    minecraft/auth/steps/MinecraftProfileCreateStep.cpp
+    minecraft/auth/steps/MinecraftProfileCreateStep.h
 
     minecraft/gameoptions/GameOptions.h
     minecraft/gameoptions/GameOptions.cpp
@@ -337,14 +342,6 @@ set(MINECRAFT_SOURCES
     # Assets
     minecraft/AssetsUtils.h
     minecraft/AssetsUtils.cpp
-
-    # Minecraft services
-    minecraft/services/CapeChange.cpp
-    minecraft/services/CapeChange.h
-    minecraft/services/SkinUpload.cpp
-    minecraft/services/SkinUpload.h
-    minecraft/services/SkinDelete.cpp
-    minecraft/services/SkinDelete.h
 
     mojang/PackageManifest.h
     mojang/PackageManifest.cpp
@@ -581,24 +578,30 @@ SET(LAUNCHER_SOURCES
     KonamiCode.h
     KonamiCode.cpp
 
-    # Bundled resources
-    resources/backgrounds/backgrounds.qrc
-    resources/multimc/multimc.qrc
-    resources/pe_dark/pe_dark.qrc
-    resources/pe_light/pe_light.qrc
-    resources/pe_colored/pe_colored.qrc
-    resources/pe_blue/pe_blue.qrc
-    resources/OSX/OSX.qrc
-    resources/iOS/iOS.qrc
-    resources/flat/flat.qrc
-    resources/documents/documents.qrc
-    ${Launcher_Branding_LogoQRC}
-
     # Icons
     icons/MMCIcon.h
     icons/MMCIcon.cpp
     icons/IconList.h
     icons/IconList.cpp
+
+    # Skins
+    skins/CapeCache.h
+    skins/CapeCache.cpp
+    skins/CapesModel.h
+    skins/CapesModel.cpp
+    skins/SkinsModel.h
+    skins/SkinsModel.cpp
+    skins/SkinRenderer.h
+    skins/SkinRenderer.cpp
+    skins/SkinWidget.h
+    skins/SkinWidget.cpp
+    skins/SkinTypes.h
+    skins/SkinTypes.cpp
+    skins/SkinUtils.h
+    skins/SkinUtils.cpp
+    skins/TextureMappings.h
+    skins/TextureMappings.cpp
+
 
     # GUI - windows
     ui/GuiUtil.h
@@ -609,10 +612,6 @@ SET(LAUNCHER_SOURCES
     ui/MainWindow.cpp
     ui/InstanceWindow.h
     ui/InstanceWindow.cpp
-
-    # FIXME: maybe find a better home for this.
-    SkinUtils.cpp
-    SkinUtils.h
 
     # GUI - setup wizard
     ui/setupwizard/SetupWizard.h
@@ -681,8 +680,6 @@ SET(LAUNCHER_SOURCES
     ui/pages/instance/WorldListPage.h
 
     # GUI - global settings pages
-    ui/pages/global/AccountListPage.cpp
-    ui/pages/global/AccountListPage.h
     ui/pages/global/CustomCommandsPage.cpp
     ui/pages/global/CustomCommandsPage.h
     ui/pages/global/ExternalToolsPage.cpp
@@ -748,8 +745,6 @@ SET(LAUNCHER_SOURCES
     ui/dialogs/AccountsDialog.h
     ui/dialogs/ProfileSelectDialog.cpp
     ui/dialogs/ProfileSelectDialog.h
-    ui/dialogs/ProfileSetupDialog.cpp
-    ui/dialogs/ProfileSetupDialog.h
     ui/dialogs/CopyInstanceDialog.cpp
     ui/dialogs/CopyInstanceDialog.h
     ui/dialogs/CustomMessageBox.cpp
@@ -758,8 +753,6 @@ SET(LAUNCHER_SOURCES
     ui/dialogs/ExportInstanceDialog.h
     ui/dialogs/IconPickerDialog.cpp
     ui/dialogs/IconPickerDialog.h
-    ui/dialogs/MSALoginDialog.cpp
-    ui/dialogs/MSALoginDialog.h
     ui/dialogs/NewComponentDialog.cpp
     ui/dialogs/NewComponentDialog.h
     ui/dialogs/NewInstanceDialog.cpp
@@ -776,8 +769,6 @@ SET(LAUNCHER_SOURCES
     ui/dialogs/UpdateDialog.h
     ui/dialogs/VersionSelectDialog.cpp
     ui/dialogs/VersionSelectDialog.h
-    ui/dialogs/SkinUploadDialog.cpp
-    ui/dialogs/SkinUploadDialog.h
     ui/dialogs/CreateShortcutDialog.cpp
     ui/dialogs/CreateShortcutDialog.h
     ui/dialogs/ModrinthExportDialog.cpp
@@ -843,17 +834,13 @@ qt5_wrap_ui(LAUNCHER_UI
     ui/dialogs/CreateShortcutDialog.ui
     ui/dialogs/ExportInstanceDialog.ui
     ui/dialogs/IconPickerDialog.ui
-    ui/dialogs/MSALoginDialog.ui
     ui/dialogs/ModrinthExportDialog.ui
     ui/dialogs/NewComponentDialog.ui
     ui/dialogs/NewInstanceDialog.ui
     ui/dialogs/NotificationDialog.ui
     ui/dialogs/ProfileSelectDialog.ui
-    ui/dialogs/ProfileSetupDialog.ui
     ui/dialogs/ProgressDialog.ui
-    ui/dialogs/SkinUploadDialog.ui
     ui/dialogs/UpdateDialog.ui
-    ui/pages/global/AccountListPage.ui
     ui/pages/global/ExternalToolsPage.ui
     ui/pages/global/JavaPage.ui
     ui/pages/global/LauncherPage.ui
@@ -898,6 +885,7 @@ qt5_add_resources(LAUNCHER_RESOURCES
     resources/iOS/iOS.qrc
     resources/flat/flat.qrc
     resources/documents/documents.qrc
+    resources/skins/skins.qrc
     ${Launcher_Branding_LogoQRC}
 )
 

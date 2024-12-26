@@ -40,10 +40,6 @@ void LauncherLoginStep::perform() {
     qDebug() << "Getting Minecraft access token...";
 }
 
-void LauncherLoginStep::rehydrate() {
-    // TODO: check the token validity
-}
-
 void LauncherLoginStep::onRequestDone(
     QNetworkReply::NetworkError error,
     QByteArray data,

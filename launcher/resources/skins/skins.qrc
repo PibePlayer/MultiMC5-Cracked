@@ -1,0 +1,34 @@
+<!DOCTYPE RCC>
+<RCC version="1.0">
+    <qresource prefix="/skins">
+        <file>textures/placeholder_skin.png</file>
+        <file>textures/placeholder_cape.png</file>
+        <file>textures/no_cape.png</file>
+
+        <!-- Mojang assets for default skins -->
+        <file>textures/Zuri_Slim.png</file>
+        <file>textures/Zuri_Classic.png</file>
+        <file>textures/Sunny_Slim.png</file>
+        <file>textures/Sunny_Classic.png</file>
+        <file>textures/Steve_Slim.png</file>
+        <file>textures/Steve_Classic.png</file>
+        <file>textures/Noor_Slim.png</file>
+        <file>textures/Noor_Classic.png</file>
+        <file>textures/Makena_Slim.png</file>
+        <file>textures/Makena_Classic.png</file>
+        <file>textures/Kai_Slim.png</file>
+        <file>textures/Kai_Classic.png</file>
+        <file>textures/Efe_Slim.png</file>
+        <file>textures/Efe_Classic.png</file>
+        <file>textures/Ari_Slim.png</file>
+        <file>textures/Ari_Classic.png</file>
+        <file>textures/Alex_Slim.png</file>
+        <file>textures/Alex_Classic.png</file>
+
+        <file>shaders/skin.frag</file>
+        <file>shaders/skin.vert</file>
+
+        <file>shaders/bg.frag</file>
+        <file>shaders/bg.vert</file>
+    </qresource>
+</RCC>

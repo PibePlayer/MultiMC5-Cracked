@@ -13,7 +13,6 @@
 #include "ui/pages/global/LanguagePage.h"
 #include "ui/pages/global/ProxyPage.h"
 #include "ui/pages/global/ExternalToolsPage.h"
-#include "ui/pages/global/AccountListPage.h"
 #include "ui/pages/global/PasteEEPage.h"
 #include "ui/pages/global/CustomCommandsPage.h"
 
@@ -27,6 +26,7 @@
 #include "ui/setupwizard/LanguageWizardPage.h"
 #include "ui/setupwizard/JavaWizardPage.h"
 
+#include "ui/dialogs/AccountsDialog.h"
 #include "ui/dialogs/CustomMessageBox.h"
 
 #include "ui/pagedialog/PageDialog.h"
@@ -51,6 +51,9 @@
 #include <minecraft/auth/AccountList.h>
 #include "icons/IconList.h"
 #include "net/HttpMetaCache.h"
+
+#include "skins/CapeCache.h"
+#include "skins/SkinsModel.h"
 
 #include "java/JavaUtils.h"
 
@@ -686,6 +689,7 @@ Application::Application(int &argc, char **argv) : QApplication(argc, argv)
         m_settings->registerSetting("InstanceDir", "instances");
         m_settings->registerSetting({"CentralModsDir", "ModsDir"}, "mods");
         m_settings->registerSetting("IconsDir", "icons");
+        m_settings->registerSetting("SkinsDir", "skins");
 
         // Editors
         m_settings->registerSetting("JsonEditor", QString());
@@ -782,7 +786,6 @@ Application::Application(int &argc, char **argv) : QApplication(argc, argv)
             m_globalSettingsProvider->addPage<CustomCommandsPage>();
             m_globalSettingsProvider->addPage<ProxyPage>();
             m_globalSettingsProvider->addPage<ExternalToolsPage>();
-            m_globalSettingsProvider->addPage<AccountListPage>();
             m_globalSettingsProvider->addPage<PasteEEPage>();
         }
         qDebug() << "<> Settings loaded.";
@@ -863,6 +866,17 @@ Application::Application(int &argc, char **argv) : QApplication(argc, argv)
         insertTheme(new BrightTheme());
         insertTheme(new CustomTheme(darkTheme, "custom"));
         qDebug() << "<> Widget themes initialized.";
+    }
+
+    // Skins
+    {
+        auto setting = APPLICATION->settings()->getSetting("SkinsDir");
+        m_skinsModel.reset(new SkinsModel(setting->get().toString()));
+        connect(setting.get(), &Setting::SettingChanged,[&](const Setting &, QVariant value)
+        {
+            m_skinsModel->directoryChanged(value.toString());
+        });
+        qDebug() << "<> Skins intialized.";
     }
 
     // initialize and load all instances
@@ -1038,8 +1052,8 @@ void Application::performMainStartupAction()
 
             if(!m_profileToUse.isEmpty())
             {
-                accountToUse = accounts()->getAccountByProfileName(m_profileToUse);
-                if(!accountToUse) {
+                int dummyRow;
+                if(!accounts()->getAccountByProfileName(m_profileToUse, accountToUse, dummyRow)) {
                     return;
                 }
                 qDebug() << "   Launching with account" << m_profileToUse;
@@ -1144,8 +1158,8 @@ void Application::messageReceived(const QByteArray& message)
 
         MinecraftAccountPtr accountObject;
         if(!profile.isEmpty()) {
-            accountObject = accounts()->getAccountByProfileName(profile);
-            if(!accountObject) {
+            int dummyRow;
+            if(!accounts()->getAccountByProfileName(profile, accountObject, dummyRow)) {
                 qWarning() << "Launch command requires the specified profile to be valid. " << profile << "does not resolve to any account.";
                 return;
             }
@@ -1410,6 +1424,13 @@ void Application::ShowGlobalSettings(class QWidget* parent, QString open_page)
     emit globalSettingsClosed();
 }
 
+void Application::ShowAccountsDialog(class QWidget* parent)
+{
+    AccountsDialog dialog(parent);
+    dialog.exec();
+}
+
+
 MainWindow* Application::showMainWindow(bool minimized)
 {
     if(m_mainWindow)
@@ -1577,6 +1598,15 @@ shared_qobject_ptr<Meta::Index> Application::metadataIndex()
         m_metadataIndex.reset(new Meta::Index());
     }
     return m_metadataIndex;
+}
+
+shared_qobject_ptr<CapeCache> Application::capeCache()
+{
+    if (!m_capeCache)
+    {
+        m_capeCache.reset(new CapeCache(this));
+    }
+    return m_capeCache;
 }
 
 QString Application::getJarsPath()

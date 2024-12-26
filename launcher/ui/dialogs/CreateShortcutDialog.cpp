@@ -33,7 +33,12 @@ CreateShortcutDialog::CreateShortcutDialog(QWidget *parent, InstancePtr instance
 
     for (int i = 0; i < accounts->count(); i++)
     {
-        accountNameList.append(accounts->at(i)->profileName());
+        auto entry = accounts->at(i);
+        if(!entry.isAccount)
+        {
+            continue;
+        }
+        accountNameList.append(entry.account->profileName());
     }
 
     ui->profileComboBox->addItems(accountNameList);

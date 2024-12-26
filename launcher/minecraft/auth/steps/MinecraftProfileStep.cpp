@@ -29,10 +29,6 @@ void MinecraftProfileStep::perform() {
     requestor->get(request);
 }
 
-void MinecraftProfileStep::rehydrate() {
-    // NOOP, for now. We only save bools and there's nothing to check.
-}
-
 void MinecraftProfileStep::onRequestDone(
     QNetworkReply::NetworkError error,
     QByteArray data,

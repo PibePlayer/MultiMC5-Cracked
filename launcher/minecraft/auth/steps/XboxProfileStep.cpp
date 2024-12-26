@@ -17,10 +17,6 @@ QString XboxProfileStep::describe() {
     return tr("Fetching Xbox profile.");
 }
 
-void XboxProfileStep::rehydrate() {
-    // NOOP, for now. We only save bools and there's nothing to check.
-}
-
 void XboxProfileStep::perform() {
     auto url = QUrl("https://profile.xboxlive.com/users/me/profile/settings");
     QUrlQuery q;

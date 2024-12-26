@@ -24,6 +24,7 @@
 #include <QByteArray>
 
 #include <QDebug>
+#include "Parsers.h"
 
 AccountTask::AccountTask(AccountData *data, QObject *parent)
     : Task(parent), m_data(data)
@@ -111,4 +112,66 @@ bool AccountTask::changeState(AccountTaskState newState, QString reason)
             return false;
         }
     }
+}
+
+MojangError MojangError::fromJSON(QByteArray data, QNetworkReply::NetworkError networkError)
+{
+    MojangError out;
+    out.rawError = QString::fromUtf8(data);
+    out.networkError = networkError;
+
+    auto doc = QJsonDocument::fromJson(data, &out.parseError);
+    if(out.parseError.error != QJsonParseError::NoError)
+    {
+        out.jsonParsed = false;
+    }
+    else
+    {
+        auto object = doc.object();
+        Parsers::getString(object.value("path"), out.path);
+        QJsonValue details = object.value("details");
+        if(details.isObject())
+        {
+            QJsonObject detailsObj = details.toObject();
+            Parsers::getString(detailsObj.value("status"), out.detailsStatus);
+        }
+        Parsers::getString(object.value("error"), out.error);
+        Parsers::getString(object.value("errorMessage"), out.errorMessage);
+        out.jsonParsed = true;
+    }
+
+
+    return out;
+}
+
+QString MojangError::toString() const
+{
+    QString outString;
+    QTextStream out(&outString);
+    out << "Network error:" << networkError << "\n";
+    if(jsonParsed)
+    {
+        if(!path.isNull())
+        {
+            out << "path: " << path << "\n";
+        }
+        if(!error.isNull())
+        {
+            out << "error: " << error << "\n";
+        }
+        if(!errorMessage.isNull())
+        {
+            out << "errorMessage: " << errorMessage << "\n";
+        }
+        if(!detailsStatus.isNull())
+        {
+            out << "details.status: " << detailsStatus << "\n";
+        }
+    }
+    else
+    {
+        out << "Mojang error failed to parse with error: " << parseError.errorString() << "\n";
+        out << "Raw contents:\n" << rawError << "\n";
+    }
+    return outString;
 }

@@ -76,6 +76,15 @@ Portions are licensed under MS-PL:
     laws, the contributors exclude the implied warranties of merchantability,
     fitness for a particular purpose and non-infringement.
 
+# Mojang assets
+
+    MultiMC contains some Minecraft assets owned by Mojang/Microsoft.
+    These are included, because MultiMC is, after all, a Minecraft launcher.
+    And without some creeper faces, what is even the point.
+
+    If someone from Mojang finds this objectionable, we'll replace these
+    with suitable substitutes. Until then, enjoy the Minecraft vibes.
+
 # MinGW runtime (Windows)
 
     Copyright (c) 2012 MinGW.org project

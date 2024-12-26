@@ -19,7 +19,6 @@
 #include <QItemSelectionModel>
 #include <QDebug>
 
-#include "SkinUtils.h"
 #include "Application.h"
 
 #include "ui/dialogs/ProgressDialog.h"
@@ -47,7 +46,12 @@ ProfileSelectDialog::ProfileSelectDialog(const QString &message, int flags, QWid
     QList <QTreeWidgetItem *> items;
     for (int i = 0; i < m_accounts->count(); i++)
     {
-        MinecraftAccountPtr account = m_accounts->at(i);
+        auto entry = m_accounts->at(i);
+        if(!entry.isAccount)
+        {
+            continue;
+        }
+        MinecraftAccountPtr account = entry.account;
         QString profileLabel;
         if(account->isInUse()) {
             profileLabel = tr("%1 (in use)").arg(account->profileName());

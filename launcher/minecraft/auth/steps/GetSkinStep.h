@@ -13,7 +13,6 @@ public:
     virtual ~GetSkinStep() noexcept;
 
     void perform() override;
-    void rehydrate() override;
 
     QString describe() override;
 

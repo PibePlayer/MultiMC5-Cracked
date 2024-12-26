@@ -1,4 +1,4 @@
-/* Copyright 2013-2021 MultiMC Contributors
+/* Copyright 2013-2024 MultiMC Contributors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,7 +23,7 @@
 #include <QSharedPointer>
 
 /*!
- * List of available Mojang accounts.
+ * List of available Minecraft accounts.
  * This should be loaded in the background by MultiMC on startup.
  */
 class AccountList : public QAbstractListModel
@@ -32,36 +32,38 @@ class AccountList : public QAbstractListModel
 public:
     enum ModelRoles
     {
-        PointerRole = 0x34B1CB48
+        PointerRole = Qt::UserRole,
+        AccountNameRole,
+        ProfileNameRole,
+        AccountStatusRole,
+        IconRole
     };
 
-    enum VListColumns
+    struct Entry
     {
-        NameColumn = 0,
-        ProfileNameColumn,
-        StatusColumn,
-
-        NUM_COLUMNS
+        bool isAccount;
+        MinecraftAccountPtr account;
     };
 
     explicit AccountList(QObject *parent = 0);
     virtual ~AccountList() noexcept;
 
-    const MinecraftAccountPtr at(int i) const;
+    const AccountList::Entry& at(int i) const;
     int count() const;
 
     //////// List Model Functions ////////
     QVariant data(const QModelIndex &index, int role) const override;
-    virtual QVariant headerData(int section, Qt::Orientation orientation, int role) const override;
     virtual int rowCount(const QModelIndex &parent) const override;
-    virtual int columnCount(const QModelIndex &parent) const override;
     virtual Qt::ItemFlags flags(const QModelIndex &index) const override;
     virtual bool setData(const QModelIndex &index, const QVariant &value, int role) override;
 
-    void addAccount(const MinecraftAccountPtr account);
-    void removeAccount(QModelIndex index);
-    int findAccountByProfileId(const QString &profileId) const;
-    MinecraftAccountPtr getAccountByProfileName(const QString &profileName) const;
+    QModelIndex addAccount(const MinecraftAccountPtr account);
+    void removeAccount(const QString& accountId);
+
+    bool getAccountByXID(const QString &xid, MinecraftAccountPtr& pointer, int& index) const;
+    bool getAccountByProfileName(const QString& profileName, MinecraftAccountPtr& pointer, int& index) const;
+    bool getAccountById(const QString& internalId, MinecraftAccountPtr& pointer, int& index) const;
+
     QStringList profileNames() const;
 
     // requesting a refresh pushes it to the front of the queue
@@ -83,6 +85,7 @@ public:
     bool saveList();
 
     MinecraftAccountPtr defaultAccount() const;
+    QModelIndex defaultAccountIndex() const;
     void setDefaultAccount(MinecraftAccountPtr profileId);
     bool anyAccountIsValid();
 
@@ -95,22 +98,23 @@ protected:
 private:
     const char* m_name;
     uint32_t m_activityCount = 0;
+
 signals:
     void listChanged();
-    void listActivityChanged();
+    void accountActivityChanged(MinecraftAccount *account, bool active);
+    void accountChanged(MinecraftAccount *account);
     void defaultAccountChanged();
-    void activityChanged(bool active);
 
 public slots:
     /**
      * This is called when one of the accounts changes and the list needs to be updated
      */
-    void accountChanged();
+    void onAccountChanged();
 
     /**
      * This is called when a (refresh/login) task involving the account starts or ends
      */
-    void accountActivityChanged(bool active);
+    void onAccountActivityChanged(bool active);
 
     /**
      * This is initially to run background account refresh tasks, or on a hourly timer
@@ -141,7 +145,7 @@ protected:
      */
     void onDefaultAccountChanged();
 
-    QList<MinecraftAccountPtr> m_accounts;
+    QList<Entry> m_accounts;
 
     MinecraftAccountPtr m_defaultAccount;
 

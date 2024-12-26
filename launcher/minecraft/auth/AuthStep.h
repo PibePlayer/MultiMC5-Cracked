@@ -21,7 +21,6 @@ public:
 
 public slots:
     virtual void perform() = 0;
-    virtual void rehydrate() = 0;
 
 signals:
     void finished(AccountTaskState resultingState, QString message);

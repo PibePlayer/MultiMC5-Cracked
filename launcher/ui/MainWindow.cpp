@@ -54,7 +54,6 @@
 #include <java/JavaInstallList.h>
 #include <launch/LaunchTask.h>
 #include <minecraft/auth/AccountList.h>
-#include <SkinUtils.h>
 #include <BuildConfig.h>
 #include <net/NetJob.h>
 #include <net/Download.h>
@@ -95,15 +94,22 @@
 #include "MMCTime.h"
 
 namespace {
-QString profileInUseFilter(const QString & profile, bool used)
+QString profileInUseFilter(const QString& profileName, const QString& accountName, bool used)
 {
+    QString displayString;
+    if(profileName.size() == 0) {
+        displayString = QObject::tr("No profile (%1)").arg(accountName);
+    }
+    else {
+        displayString = profileName;
+    }
     if(used)
     {
-        return QObject::tr("%1 (in use)").arg(profile);
+        return QObject::tr("%1 (in use)").arg(displayString);
     }
     else
     {
-        return profile;
+        return displayString;
     }
 }
 }
@@ -806,29 +812,11 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new MainWindow
     ui->mainToolBar->addAction(accountMenuButtonAction);
 
     // Update the menu when the active account changes.
-    // Shouldn't have to use lambdas here like this, but if I don't, the compiler throws a fit.
-    // Template hell sucks...
-    connect(
-        APPLICATION->accounts().get(),
-        &AccountList::defaultAccountChanged,
-        [this] {
-            defaultAccountChanged();
-        }
-    );
-    connect(
-        APPLICATION->accounts().get(),
-        &AccountList::listChanged,
-        [this]
-        {
-            repopulateAccountsMenu();
-        }
-    );
+    connect(APPLICATION->accounts().get(), &AccountList::defaultAccountChanged, this, &MainWindow::defaultAccountChanged);
+    connect(APPLICATION->accounts().get(), &AccountList::listChanged, this, &MainWindow::repopulateAccountsMenu);
 
     // Show initial account
     defaultAccountChanged();
-
-    // TODO: refresh accounts here?
-    // auto accounts = APPLICATION->accounts();
 
     // load the news
     {
@@ -879,11 +867,11 @@ void MainWindow::retranslateUi()
     auto accounts = APPLICATION->accounts();
     MinecraftAccountPtr defaultAccount = accounts->defaultAccount();
     if(defaultAccount) {
-        auto profileLabel = profileInUseFilter(defaultAccount->profileName(), defaultAccount->isInUse());
+        auto profileLabel = profileInUseFilter(defaultAccount->profileName(), defaultAccount->gamerTag(), defaultAccount->isInUse());
         accountMenuButton->setText(profileLabel);
     }
     else {
-        accountMenuButton->setText(tr("Profiles"));
+        accountMenuButton->setText(tr("Accounts"));
     }
 
     if (m_selectedInstance) {
@@ -1091,7 +1079,7 @@ void MainWindow::repopulateAccountsMenu()
         // this can be called before accountMenuButton exists
         if (accountMenuButton)
         {
-            auto profileLabel = profileInUseFilter(defaultAccount->profileName(), defaultAccount->isInUse());
+            auto profileLabel = profileInUseFilter(defaultAccount->profileName(), defaultAccount->gamerTag(), defaultAccount->isInUse());
             accountMenuButton->setText(profileLabel);
         }
     }
@@ -1107,8 +1095,14 @@ void MainWindow::repopulateAccountsMenu()
         // TODO: Nicer way to iterate?
         for (int i = 0; i < accounts->count(); i++)
         {
-            MinecraftAccountPtr account = accounts->at(i);
-            auto profileLabel = profileInUseFilter(account->profileName(), account->isInUse());
+            auto entry = accounts->at(i);
+            if(!entry.isAccount)
+            {
+                continue;
+            }
+            auto account = entry.account;
+
+            auto profileLabel = profileInUseFilter(account->profileName(), account->gamerTag(), account->isInUse());
             QAction *action = new QAction(profileLabel, this);
             action->setData(i);
             action->setCheckable(true);
@@ -1173,7 +1167,7 @@ void MainWindow::changeActiveAccount()
         index = -1;
     }
     auto accounts = APPLICATION->accounts();
-    accounts->setDefaultAccount(index == -1 ? nullptr : accounts->at(index));
+    accounts->setDefaultAccount(index == -1 ? nullptr : accounts->at(index).account);
     defaultAccountChanged();
 }
 
@@ -1183,24 +1177,22 @@ void MainWindow::defaultAccountChanged()
 
     MinecraftAccountPtr account = APPLICATION->accounts()->defaultAccount();
 
-    // FIXME: this needs adjustment for MSA
-    if (account && account->profileName() != "")
+    if (!account)
     {
-        auto profileLabel = profileInUseFilter(account->profileName(), account->isInUse());
-        accountMenuButton->setText(profileLabel);
-        auto face = account->getFace();
-        if(face.isNull()) {
-            accountMenuButton->setIcon(APPLICATION->getThemedIcon("noaccount"));
-        }
-        else {
-            accountMenuButton->setIcon(face);
-        }
+        accountMenuButton->setIcon(APPLICATION->getThemedIcon("noaccount"));
+        accountMenuButton->setText(tr("Accounts"));
         return;
     }
 
-    // Set the icon to the "no account" icon.
-    accountMenuButton->setIcon(APPLICATION->getThemedIcon("noaccount"));
-    accountMenuButton->setText(tr("Profiles"));
+    auto profileLabel = profileInUseFilter(account->profileName(), account->gamerTag(), account->isInUse());
+    accountMenuButton->setText(profileLabel);
+    auto face = account->getFace();
+    if(face.isNull()) {
+        accountMenuButton->setIcon(APPLICATION->getThemedIcon("noaccount"));
+    }
+    else {
+        accountMenuButton->setIcon(face);
+    }
 }
 
 bool MainWindow::eventFilter(QObject *obj, QEvent *ev)
@@ -1723,7 +1715,7 @@ void MainWindow::on_actionScreenshots_triggered()
 
 void MainWindow::on_actionManageAccounts_triggered()
 {
-    APPLICATION->ShowGlobalSettings(this, "accounts");
+    APPLICATION->ShowAccountsDialog(this);
 }
 
 void MainWindow::on_actionReportBug_triggered()

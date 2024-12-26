@@ -20,10 +20,6 @@ QString XboxAuthorizationStep::describe() {
     return tr("Getting authorization to access %1 services.").arg(m_authorizationKind);
 }
 
-void XboxAuthorizationStep::rehydrate() {
-    // FIXME: check if the tokens are good?
-}
-
 void XboxAuthorizationStep::perform() {
     QString xbox_auth_template = R"XXX(
 {

@@ -33,6 +33,8 @@ class BaseDetachedToolFactory;
 class TranslationsModel;
 class ITheme;
 class MCEditTool;
+class CapeCache;
+class SkinsModel;
 
 namespace Meta {
     class Index;
@@ -91,6 +93,10 @@ public:
         return m_icons;
     }
 
+    shared_qobject_ptr<SkinsModel> skinsModel() const {
+        return m_skinsModel;
+    }
+
     MCEditTool *mcedit() const {
         return m_mcedit.get();
     }
@@ -117,6 +123,8 @@ public:
 
     shared_qobject_ptr<Meta::Index> metadataIndex();
 
+    shared_qobject_ptr<CapeCache> capeCache();
+
     QString getJarsPath();
 
     /// this is the root of the 'installation'. Used for automatic updates
@@ -132,6 +140,8 @@ public:
 
     InstanceWindow *showInstanceWindow(InstancePtr instance, QString page = QString());
     MainWindow *showMainWindow(bool minimized = false);
+
+    void ShowAccountsDialog(class QWidget * parent);
 
     void updateIsRunning(bool running);
     bool updatesAreAllowed();
@@ -183,6 +193,9 @@ private:
 
     shared_qobject_ptr<HttpMetaCache> m_metacache;
     shared_qobject_ptr<Meta::Index> m_metadataIndex;
+
+    shared_qobject_ptr<CapeCache> m_capeCache;
+    shared_qobject_ptr<SkinsModel> m_skinsModel;
 
     std::shared_ptr<SettingsObject> m_settings;
     std::shared_ptr<InstanceList> m_instances;

@@ -19,12 +19,13 @@
 
 #include <QString>
 #include <QJsonObject>
+#include <QNetworkReply>
 #include <QTimer>
 #include <qsslerror.h>
 
 #include "MinecraftAccount.h"
+#include <QJsonParseError>
 
-class QNetworkReply;
 
 /**
  * Enum for describing the state of the current task.
@@ -40,6 +41,22 @@ enum class AccountTaskState
     STATE_FAILED_HARD, //!< hard failure. main tokens are invalid
     STATE_FAILED_GONE, //!< hard failure. main tokens are invalid, and the account no longer exists
     STATE_OFFLINE //!< soft failure. authentication failed in the first step in a 'soft' way
+};
+
+struct MojangError{
+    static MojangError fromJSON(QByteArray data, QNetworkReply::NetworkError networkError);
+    QString toString() const;
+
+    QNetworkReply::NetworkError networkError;
+    QString rawError;
+
+    QJsonParseError parseError;
+    bool jsonParsed = false;
+
+    QString path;
+    QString error;
+    QString errorMessage;
+    QString detailsStatus;
 };
 
 class AccountTask : public Task
@@ -58,6 +75,7 @@ public:
 signals:
     void showVerificationUriAndCode(const QUrl &uri, const QString &code, int expiresIn);
     void hideVerificationUriAndCode();
+    void apiError(const MojangError& error);
 
 protected:
 

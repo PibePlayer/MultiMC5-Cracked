@@ -6,23 +6,37 @@
 
 ClaimAccount::ClaimAccount(LaunchTask* parent, AuthSessionPtr session): LaunchStep(parent)
 {
+    m_playerName = session->player_name;
     if(session->status == AuthSession::Status::PlayableOnline && !session->demo)
     {
+        online = true;
         auto accounts = APPLICATION->accounts();
-        m_account = accounts->getAccountByProfileName(session->player_name);
+        int index;
+        accounts->getAccountByProfileName(m_playerName, m_account, index);
     }
 }
 
 void ClaimAccount::executeTask()
 {
-    if(m_account)
+    if(online)
     {
-        lock.reset(new UseLock(m_account));
+        if(m_account)
+        {
+            m_lock.reset(new UseLock(m_account));
+            emitSucceeded();
+        }
+        else
+        {
+            emitFailed(tr("Failed to claim account by profile: %1 was not found.").arg(m_playerName));
+        }
+    }
+    else
+    {
         emitSucceeded();
     }
 }
 
 void ClaimAccount::finalize()
 {
-    lock.reset();
+    m_lock.reset();
 }

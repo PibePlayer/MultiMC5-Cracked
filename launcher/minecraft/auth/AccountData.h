@@ -56,13 +56,15 @@ struct AccountData {
     bool resumeStateFromV3(QJsonObject data);
 
     //! gamertag for MSA
-    QString accountDisplayString() const;
+    QString gamerTag() const;
 
     //! Yggdrasil access token, as passed to the game.
     QString accessToken() const;
 
     QString profileId() const;
     QString profileName() const;
+
+    QString xid() const;
 
     QString lastError() const;
 

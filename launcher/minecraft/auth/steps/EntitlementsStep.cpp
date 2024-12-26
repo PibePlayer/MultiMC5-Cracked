@@ -31,10 +31,6 @@ void EntitlementsStep::perform() {
     qDebug() << "Getting entitlements...";
 }
 
-void EntitlementsStep::rehydrate() {
-    // NOOP, for now. We only save bools and there's nothing to check.
-}
-
 void EntitlementsStep::onRequestDone(
     QNetworkReply::NetworkError error,
     QByteArray data,

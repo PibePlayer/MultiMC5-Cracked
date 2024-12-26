@@ -13,7 +13,6 @@ public:
     virtual ~XboxProfileStep() noexcept;
 
     void perform() override;
-    void rehydrate() override;
 
     QString describe() override;
 

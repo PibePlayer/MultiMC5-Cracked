@@ -31,19 +31,6 @@ QString MSAStep::describe() {
 }
 
 
-void MSAStep::rehydrate() {
-    switch(m_action) {
-        case Refresh: {
-            // TODO: check the tokens and see if they are old (older than a day)
-            return;
-        }
-        case Login: {
-            // NOOP
-            return;
-        }
-    }
-}
-
 void MSAStep::perform() {
     switch(m_action) {
         case Refresh: {

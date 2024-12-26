@@ -24,10 +24,6 @@ void GetSkinStep::perform() {
     requestor->get(request);
 }
 
-void GetSkinStep::rehydrate() {
-    // NOOP, for now.
-}
-
 void GetSkinStep::onRequestDone(
     QNetworkReply::NetworkError error,
     QByteArray data,

@@ -8,8 +8,6 @@
 #include "ui/dialogs/CustomMessageBox.h"
 #include "ui/dialogs/ProfileSelectDialog.h"
 #include "ui/dialogs/ProgressDialog.h"
-#include "ui/dialogs/ProfileSetupDialog.h"
-#include "ui/dialogs/MSALoginDialog.h"
 #include "ui/dialogs/OfflineNameDialog.h"
 
 #include <QLineEdit>
@@ -25,6 +23,7 @@
 #include "tasks/Task.h"
 #include "minecraft/auth/AccountTask.h"
 #include "launch/steps/TextPrint.h"
+#include "ui/dialogs/AccountsDialog.h"
 
 LaunchController::LaunchController(QObject *parent) : Task(parent)
 {
@@ -162,16 +161,23 @@ void LaunchController::login() {
                 }
                 if(m_accountToUse->ownsMinecraft()) {
                     if(!m_accountToUse->hasProfile()) {
-                        // Now handle setting up a profile name here...
-                        ProfileSetupDialog dialog(m_accountToUse, m_parentWidget);
-                        if (dialog.exec() == QDialog::Accepted)
-                        {
+                        QMessageBox box(m_parentWidget);
+                        box.setWindowTitle(tr("Account doesn't have a Minecraft profile"));
+                        box.setText(tr("The account doesn't have a Minecraft profile yet.\nYou need to create a profile first to play.\n\nDo you want to open the Accounts dialog?"));
+                        box.setIcon(QMessageBox::Warning);
+                        auto accountsButton = box.addButton(tr("Open Accounts"), QMessageBox::ButtonRole::YesRole);
+                        box.addButton(tr("Cancel"), QMessageBox::ButtonRole::NoRole);
+                        box.setDefaultButton(accountsButton);
+
+                        box.exec();
+                        if(box.clickedButton() == accountsButton) {
+                            AccountsDialog dialog(m_parentWidget, m_accountToUse->internalId());
+                            dialog.exec();
                             tryagain = true;
                             continue;
                         }
-                        else
-                        {
-                            emitFailed(tr("Received undetermined session status during login."));
+                        else {
+                            emitFailed(tr("Launch cancelled - account does not own Minecraft."));
                             return;
                         }
                     }
@@ -225,7 +231,7 @@ void LaunchController::login() {
             }
             */
             case AccountState::Expired: {
-                auto errorString = tr("The account has expired and needs to be logged into manually. Press OK to log in again.");
+                auto errorString = tr("The account has expired and needs to be logged into manually. Press OK to open the accounts window.");
                 auto button = QMessageBox::warning(
                     m_parentWidget,
                     tr("Account refresh failed"),
@@ -235,22 +241,11 @@ void LaunchController::login() {
                 );
                 if (button == QMessageBox::StandardButton::Ok) {
                     auto accounts = APPLICATION->accounts();
-                    bool isDefault = accounts->defaultAccount() == m_accountToUse;
-                    accounts->removeAccount(accounts->index(accounts->findAccountByProfileId(m_accountToUse->profileId())));
-                    MinecraftAccountPtr newAccount = nullptr;
-                    newAccount = MSALoginDialog::newAccount(m_parentWidget);
-                    if (newAccount) {
-                        accounts->addAccount(newAccount);
-                        if (isDefault) {
-                            accounts->setDefaultAccount(newAccount);
-                        }
-                        m_accountToUse = nullptr;
-                        decideAccount();
-                        continue;
-                    } else {
-                        emitFailed(tr("Account expired and re-login attempt failed"));
-                        return;
-                    }
+                    accounts->removeAccount(m_accountToUse->internalId());
+                    AccountsDialog accountsDialog;
+                    accountsDialog.exec();
+                    emitFailed("The account has expired.");
+                    return;
                 } else {
                     emitFailed(errorString);
                     return;

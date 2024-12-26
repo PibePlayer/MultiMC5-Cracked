@@ -297,27 +297,16 @@ QString AccountData::profileId() const {
     return minecraftProfile.id;
 }
 
-QString AccountData::profileName() const {
-    if(minecraftProfile.name.size() == 0) {
-        return QObject::tr("No profile (%1)").arg(accountDisplayString());
-    }
-    else {
-        return minecraftProfile.name;
-    }
+QString AccountData::xid() const {
+    return xboxApiToken.extra["xid"].toString();
 }
 
-QString AccountData::accountDisplayString() const {
-    switch(type) {
-        case AccountType::MSA: {
-            if(xboxApiToken.extra.contains("gtg")) {
-                return xboxApiToken.extra["gtg"].toString();
-            }
-            return "Xbox profile missing";
-        }
-        default: {
-            return "Invalid Account";
-        }
-    }
+QString AccountData::profileName() const {
+    return minecraftProfile.name;
+}
+
+QString AccountData::gamerTag() const {
+    return xboxApiToken.extra["gtg"].toString();
 }
 
 QString AccountData::lastError() const {

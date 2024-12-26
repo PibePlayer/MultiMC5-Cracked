@@ -30,6 +30,9 @@
 
 #include "flows/MSA.h"
 
+#include "skins/CapeCache.h"
+#include <Application.h>
+
 MinecraftAccount::MinecraftAccount(QObject* parent) : QObject(parent) {
     data.internalId = QUuid::createUuid().toString().remove(QRegExp("[{}-]"));
 }
@@ -59,16 +62,78 @@ AccountState MinecraftAccount::accountState() const {
     return data.accountState;
 }
 
+QString MinecraftAccount::accountStateText() const
+{
+    switch(data.accountState)
+    {
+        case AccountState::Unchecked: {
+            return tr("Unchecked", "Account status");
+        }
+        case AccountState::Offline: {
+            return tr("Offline", "Account status");
+        }
+        case AccountState::Online: {
+            return tr("Online", "Account status");
+        }
+        case AccountState::Working: {
+            return tr("Working", "Account status");
+        }
+        case AccountState::Errored: {
+            return tr("Errored", "Account status");
+        }
+        case AccountState::Expired: {
+            return tr("Expired", "Account status");
+        }
+        case AccountState::Gone: {
+            return tr("Gone", "Account status");
+        }
+        case AccountState::MustMigrate: {
+            return tr("Must Migrate", "Account status");
+        }
+        default: {
+            return tr("Unknown", "Account status");
+        }
+    }
+}
+
+
+void MinecraftAccount::updateCapeCache() const
+{
+    auto capeCache = APPLICATION->capeCache();
+    for(const auto& cape: data.minecraftProfile.capes)
+    {
+        capeCache->addCapeImage(cape.id, cape.url);
+    }
+}
+
+QString MinecraftAccount::getCurrentCape() const
+{
+    return data.minecraftProfile.currentCape;
+}
+
+QByteArray MinecraftAccount::getSkin() const
+{
+    return data.minecraftProfile.skin.data;
+}
+
+Skins::Model MinecraftAccount::getSkinModel() const
+{
+    if(data.minecraftProfile.skin.variant == "CLASSIC")
+        return Skins::Model::Classic;
+    return Skins::Model::Slim;
+}
+
 QPixmap MinecraftAccount::getFace() const {
     QPixmap skinTexture;
     if(!skinTexture.loadFromData(data.minecraftProfile.skin.data, "PNG")) {
         return QPixmap();
     }
-    QPixmap skin = QPixmap(8, 8);
+    QPixmap skin = QPixmap(72, 72);
+    skin.fill(Qt::transparent);
     QPainter painter(&skin);
-    painter.drawPixmap(0, 0, skinTexture.copy(8, 8, 8, 8));
-    painter.drawPixmap(0, 0, skinTexture.copy(40, 8, 8, 8));
-    return skin.scaled(64, 64, Qt::KeepAspectRatio);
+    painter.drawPixmap(4, 4, skinTexture.copy(8, 8, 8, 8).scaled(64, 64));
+    painter.drawPixmap(0, 0, skinTexture.copy(40, 8, 8, 8).scaled(72, 72));
+    return skin;
 }
 
 shared_qobject_ptr<AccountTask> MinecraftAccount::loginMSA() {
@@ -94,6 +159,33 @@ shared_qobject_ptr<AccountTask> MinecraftAccount::refresh() {
     return m_currentTask;
 }
 
+shared_qobject_ptr<AccountTask> MinecraftAccount::createMinecraftProfile(const QString& profileName) {
+    if(m_currentTask) {
+        return nullptr;
+    }
+
+    m_currentTask.reset(new MSACreateProfile(&data, profileName));
+
+    connect(m_currentTask.get(), SIGNAL(succeeded()), SLOT(authSucceeded()));
+    connect(m_currentTask.get(), SIGNAL(failed(QString)), SLOT(authFailed(QString)));
+    emit activityChanged(true);
+    return m_currentTask;
+}
+
+shared_qobject_ptr<AccountTask> MinecraftAccount::setSkin(Skins::Model model, QByteArray texture, const QString& capeUUID) {
+    if(m_currentTask) {
+        return nullptr;
+    }
+
+    m_currentTask.reset(new MSASetSkin(&data, texture, model, capeUUID));
+
+    connect(m_currentTask.get(), SIGNAL(succeeded()), SLOT(authSucceeded()));
+    connect(m_currentTask.get(), SIGNAL(failed(QString)), SLOT(authFailed(QString)));
+    emit activityChanged(true);
+    return m_currentTask;
+}
+
+
 shared_qobject_ptr<AccountTask> MinecraftAccount::currentTask() {
     return m_currentTask;
 }
@@ -102,6 +194,7 @@ shared_qobject_ptr<AccountTask> MinecraftAccount::currentTask() {
 void MinecraftAccount::authSucceeded()
 {
     m_currentTask.reset();
+    updateCapeCache();
     emit changed();
     emit activityChanged(false);
 }
@@ -233,4 +326,10 @@ void MinecraftAccount::incrementUses()
         // FIXME: we now need a better way to identify accounts...
         qWarning() << "Profile" << data.profileId() << "is now in use.";
     }
+}
+
+void MinecraftAccount::replaceDataWith(MinecraftAccountPtr other)
+{
+    data = other->data;
+    emit changed();
 }

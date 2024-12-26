@@ -32,6 +32,8 @@ public:
         return false;
     }
 private:
-    std::unique_ptr<UseLock> lock;
+    std::unique_ptr<UseLock> m_lock;
+    QString m_playerName;
     MinecraftAccountPtr m_account;
+    bool online = false;
 };
