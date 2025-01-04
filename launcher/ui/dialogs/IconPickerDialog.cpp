@@ -159,5 +159,5 @@ IconPickerDialog::~IconPickerDialog()
 
 void IconPickerDialog::openFolder()
 {
-    DesktopServices::openDirectory(APPLICATION->icons()->getDirectory(), true);
+    DesktopServices::openDirectory(APPLICATION->icons()->getDirectory());
 }

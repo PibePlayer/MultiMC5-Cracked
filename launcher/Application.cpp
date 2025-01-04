@@ -1225,7 +1225,7 @@ bool Application::openJsonEditor(const QString &filename)
     const QString file = QDir::current().absoluteFilePath(filename);
     if (m_settings->get("JsonEditor").toString().isEmpty())
     {
-        return DesktopServices::openUrl(QUrl::fromLocalFile(file));
+        return DesktopServices::openFile(file);
     }
     else
     {

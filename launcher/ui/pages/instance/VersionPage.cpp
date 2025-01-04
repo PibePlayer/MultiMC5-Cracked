@@ -591,12 +591,12 @@ void VersionPage::on_actionInstall_LiteLoader_triggered()
 
 void VersionPage::on_actionLibrariesFolder_triggered()
 {
-    DesktopServices::openDirectory(m_inst->getLocalLibraryPath(), true);
+    DesktopServices::openDirectory(m_inst->getLocalLibraryPath());
 }
 
 void VersionPage::on_actionMinecraftFolder_triggered()
 {
-    DesktopServices::openDirectory(m_inst->gameRoot(), true);
+    DesktopServices::openDirectory(m_inst->gameRoot());
 }
 
 void VersionPage::versionCurrent(const QModelIndex &current, const QModelIndex &previous)

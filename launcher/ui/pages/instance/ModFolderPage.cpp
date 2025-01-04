@@ -344,12 +344,12 @@ void ModFolderPage::on_actionRemove_triggered()
 
 void ModFolderPage::on_actionView_configs_triggered()
 {
-    DesktopServices::openDirectory(m_inst->instanceConfigFolder(), true);
+    DesktopServices::openDirectory(m_inst->instanceConfigFolder());
 }
 
 void ModFolderPage::on_actionView_Folder_triggered()
 {
-    DesktopServices::openDirectory(m_mods->dir().absolutePath(), true);
+    DesktopServices::openDirectory(m_mods->dir().absolutePath());
 }
 
 void ModFolderPage::modCurrent(const QModelIndex &current, const QModelIndex &previous)

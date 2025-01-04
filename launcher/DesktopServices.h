@@ -27,7 +27,7 @@ namespace DesktopServices
     /**
      * Open a directory
      */
-    bool openDirectory(const QString &path, bool ensureExists = false);
+    bool openDirectory(const QString &path);
 
     /**
      * Open the URL, most likely in a browser. Maybe.

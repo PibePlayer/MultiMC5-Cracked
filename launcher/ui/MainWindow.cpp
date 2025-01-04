@@ -1640,8 +1640,7 @@ void MainWindow::deleteGroup()
 
 void MainWindow::on_actionViewInstanceFolder_triggered()
 {
-    QString str = APPLICATION->settings()->get("InstanceDir").toString();
-    DesktopServices::openDirectory(str);
+    DesktopServices::openDirectory(APPLICATION->settings()->get("InstanceDir").toString());
 }
 
 void MainWindow::refreshInstances()
@@ -1651,7 +1650,7 @@ void MainWindow::refreshInstances()
 
 void MainWindow::on_actionViewCentralModsFolder_triggered()
 {
-    DesktopServices::openDirectory(APPLICATION->settings()->get("CentralModsDir").toString(), true);
+    DesktopServices::openDirectory(APPLICATION->settings()->get("CentralModsDir").toString());
 }
 
 void MainWindow::on_actionConfig_Folder_triggered()

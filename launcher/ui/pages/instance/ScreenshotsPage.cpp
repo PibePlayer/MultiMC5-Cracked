@@ -305,7 +305,7 @@ void ScreenshotsPage::onItemActivated(QModelIndex index)
 
 void ScreenshotsPage::on_actionView_Folder_triggered()
 {
-    DesktopServices::openDirectory(m_folder, true);
+    DesktopServices::openDirectory(m_folder);
 }
 
 void ScreenshotsPage::on_actionUpload_triggered()
