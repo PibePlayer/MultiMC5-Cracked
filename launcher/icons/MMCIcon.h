@@ -21,7 +21,6 @@
 enum IconType : unsigned
 {
     Builtin,
-    Transient,
     FileBased,
     ICONS_TOTAL,
     ToBeDeleted
