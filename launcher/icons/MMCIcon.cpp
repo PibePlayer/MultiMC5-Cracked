@@ -17,8 +17,6 @@
 #include <QFileInfo>
 #include <xdgicon.h>
 
-QIcon logoIcon = QIcon(":/logo.svg");
-
 IconType operator--(IconType &t, int)
 {
     IconType temp = t;
@@ -62,7 +60,7 @@ QIcon MMCIcon::icon() const
     }
     if(m_current_type == IconType::Builtin && m_key == "logo")
     {
-        return logoIcon;
+        return m_logoIcon;
     }
     auto & icon = m_images[m_current_type].icon;
     if(!icon.isNull())

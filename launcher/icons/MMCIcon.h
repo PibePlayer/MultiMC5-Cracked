@@ -39,6 +39,7 @@ struct MMCImage
 
 struct MMCIcon
 {
+    QIcon m_logoIcon;
     QString m_key;
     QString m_name;
     MMCImage m_images[ICONS_TOTAL];

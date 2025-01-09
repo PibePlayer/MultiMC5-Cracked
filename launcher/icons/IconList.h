@@ -84,4 +84,5 @@ private:
     QMap<QString, int> name_index;
     QVector<MMCIcon> icons;
     QDir m_dir;
+    QIcon m_logoIcon;
 };
