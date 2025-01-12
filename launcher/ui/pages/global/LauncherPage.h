@@ -65,9 +65,17 @@ private:
 private
 slots:
     void on_instDirBrowseBtn_clicked();
+    void on_instDirOpenBtn_clicked();
+
     void on_modsDirBrowseBtn_clicked();
+    void on_modsDirOpenBtn_clicked();
+
     void on_iconsDirBrowseBtn_clicked();
+    void on_iconsDirOpenBtn_clicked();
+
     void on_skinsDirBrowseBtn_clicked();
+    void on_skinsDirOpenBtn_clicked();
+
     void on_migrateDataFolderMacBtn_clicked();
 
     /*!

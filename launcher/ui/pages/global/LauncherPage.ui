@@ -67,31 +67,8 @@
           <string>Folders</string>
          </property>
          <layout class="QGridLayout" name="foldersBoxLayout">
-          <item row="1" column="0">
-           <widget class="QLabel" name="labelModsDir">
-            <property name="text">
-             <string>&amp;Mods:</string>
-            </property>
-            <property name="buddy">
-             <cstring>modsDirTextBox</cstring>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="0">
-           <widget class="QLabel" name="labelInstDir">
-            <property name="text">
-             <string>I&amp;nstances:</string>
-            </property>
-            <property name="buddy">
-             <cstring>instDirTextBox</cstring>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1">
-           <widget class="QLineEdit" name="instDirTextBox"/>
-          </item>
-          <item row="0" column="2">
-           <widget class="QToolButton" name="instDirBrowseBtn">
+          <item row="2" column="2">
+           <widget class="QToolButton" name="iconsDirBrowseBtn">
             <property name="text">
              <string notr="true">...</string>
             </property>
@@ -107,8 +84,8 @@
             </property>
            </widget>
           </item>
-          <item row="2" column="2">
-           <widget class="QToolButton" name="iconsDirBrowseBtn">
+          <item row="3" column="2">
+           <widget class="QToolButton" name="skinsDirBrowseBtn">
             <property name="text">
              <string notr="true">...</string>
             </property>
@@ -117,13 +94,10 @@
           <item row="1" column="1">
            <widget class="QLineEdit" name="modsDirTextBox"/>
           </item>
-          <item row="2" column="0">
-           <widget class="QLabel" name="labelIconsDir">
+          <item row="0" column="2">
+           <widget class="QToolButton" name="instDirBrowseBtn">
             <property name="text">
-             <string>&amp;Icons:</string>
-            </property>
-            <property name="buddy">
-             <cstring>iconsDirTextBox</cstring>
+             <string notr="true">...</string>
             </property>
            </widget>
           </item>
@@ -137,13 +111,67 @@
             </property>
            </widget>
           </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="labelModsDir">
+            <property name="text">
+             <string>&amp;Mods:</string>
+            </property>
+            <property name="buddy">
+             <cstring>modsDirTextBox</cstring>
+            </property>
+           </widget>
+          </item>
           <item row="3" column="1">
            <widget class="QLineEdit" name="skinsDirTextBox"/>
           </item>
-          <item row="3" column="2">
-           <widget class="QToolButton" name="skinsDirBrowseBtn">
+          <item row="0" column="0">
+           <widget class="QLabel" name="labelInstDir">
             <property name="text">
-             <string notr="true">...</string>
+             <string>I&amp;nstances:</string>
+            </property>
+            <property name="buddy">
+             <cstring>instDirTextBox</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QLineEdit" name="instDirTextBox"/>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="labelIconsDir">
+            <property name="text">
+             <string>&amp;Icons:</string>
+            </property>
+            <property name="buddy">
+             <cstring>iconsDirTextBox</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="3">
+           <widget class="QPushButton" name="instDirOpenBtn">
+            <property name="text">
+             <string>Open</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="3">
+           <widget class="QPushButton" name="modsDirOpenBtn">
+            <property name="text">
+             <string>Open</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="3">
+           <widget class="QPushButton" name="iconsDirOpenBtn">
+            <property name="text">
+             <string>Open</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="3">
+           <widget class="QPushButton" name="skinsDirOpenBtn">
+            <property name="text">
+             <string>Open</string>
             </property>
            </widget>
           </item>
@@ -483,16 +511,19 @@
   </layout>
  </widget>
  <tabstops>
-  <tabstop>tabWidget</tabstop>
   <tabstop>autoUpdateCheckBox</tabstop>
   <tabstop>instDirTextBox</tabstop>
   <tabstop>instDirBrowseBtn</tabstop>
+  <tabstop>instDirOpenBtn</tabstop>
   <tabstop>modsDirTextBox</tabstop>
   <tabstop>modsDirBrowseBtn</tabstop>
+  <tabstop>modsDirOpenBtn</tabstop>
   <tabstop>iconsDirTextBox</tabstop>
   <tabstop>iconsDirBrowseBtn</tabstop>
+  <tabstop>iconsDirOpenBtn</tabstop>
   <tabstop>skinsDirTextBox</tabstop>
   <tabstop>skinsDirBrowseBtn</tabstop>
+  <tabstop>skinsDirOpenBtn</tabstop>
   <tabstop>migrateDataFolderMacBtn</tabstop>
   <tabstop>resetNotificationsBtn</tabstop>
   <tabstop>sortLastLaunchedBtn</tabstop>
@@ -507,6 +538,7 @@
   <tabstop>consoleFont</tabstop>
   <tabstop>fontSizeBox</tabstop>
   <tabstop>fontPreview</tabstop>
+  <tabstop>tabWidget</tabstop>
  </tabstops>
  <resources/>
  <connections/>

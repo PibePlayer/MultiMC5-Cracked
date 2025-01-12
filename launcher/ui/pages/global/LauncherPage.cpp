@@ -31,6 +31,7 @@
 
 #include <QApplication>
 #include <QProcess>
+#include <DesktopServices.h>
 
 // FIXME: possibly move elsewhere
 enum InstSortMode
@@ -116,6 +117,11 @@ void LauncherPage::on_instDirBrowseBtn_clicked()
         }
     }
 }
+void LauncherPage::on_instDirOpenBtn_clicked()
+{
+    DesktopServices::openDirectory(ui->instDirTextBox->text());
+}
+
 
 void LauncherPage::on_iconsDirBrowseBtn_clicked()
 {
@@ -128,6 +134,11 @@ void LauncherPage::on_iconsDirBrowseBtn_clicked()
         ui->iconsDirTextBox->setText(cooked_dir);
     }
 }
+void LauncherPage::on_iconsDirOpenBtn_clicked()
+{
+    DesktopServices::openDirectory(ui->iconsDirTextBox->text());
+}
+
 void LauncherPage::on_modsDirBrowseBtn_clicked()
 {
     QString raw_dir = QFileDialog::getExistingDirectory(this, tr("Mods Folder"), ui->modsDirTextBox->text());
@@ -139,6 +150,11 @@ void LauncherPage::on_modsDirBrowseBtn_clicked()
         ui->modsDirTextBox->setText(cooked_dir);
     }
 }
+void LauncherPage::on_modsDirOpenBtn_clicked()
+{
+    DesktopServices::openDirectory(ui->modsDirTextBox->text());
+}
+
 void LauncherPage::on_skinsDirBrowseBtn_clicked()
 {
     QString raw_dir = QFileDialog::getExistingDirectory(this, tr("Skins Folder"), ui->skinsDirTextBox->text());
@@ -150,6 +166,11 @@ void LauncherPage::on_skinsDirBrowseBtn_clicked()
         ui->skinsDirTextBox->setText(cooked_dir);
     }
 }
+void LauncherPage::on_skinsDirOpenBtn_clicked()
+{
+    DesktopServices::openDirectory(ui->skinsDirTextBox->text());
+}
+
 void LauncherPage::on_migrateDataFolderMacBtn_clicked()
 {
     QFile file(QDir::current().absolutePath() + "/dontmovemacdata");
