@@ -188,6 +188,7 @@ const QImage & SkinData::getListTexture(Model model) const
 
             paintFront(8, 22, left_leg);
             paintFront(8, 22, left_leg_cover);
+            paintFront(4, 22, right_leg_cover);
         }
 
         paintBack(24, 2, head);
@@ -233,6 +234,7 @@ const QImage & SkinData::getListTexture(Model model) const
 
             paintBack(24, 22, left_leg);
             paintBack(24, 22, left_leg_cover);
+            paintBack(28, 22, right_leg_cover);
         }
         preview = temp.scaled(72, 72);
     }
