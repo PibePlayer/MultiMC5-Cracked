@@ -198,8 +198,9 @@ void RenderSkin(RenderContext& context, int version, Model model)
 
     QMatrix4x4 capeTransform;
     capeTransform.translate(0, 8, -2);
-    capeTransform.rotate(10, 1, 0, 0);
-    capeTransform.translate(0, -8, -0.5);
+    capeTransform.rotate(180, 0, 1, 0);
+    capeTransform.rotate(-10, 1, 0, 0);
+    capeTransform.translate(0, -8, 0.5);
 
     if(context.m_capeTexture)
     {
