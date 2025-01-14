@@ -138,11 +138,19 @@ const QImage & SkinData::getListTexture(Model model) const
         auto paintFront = [&](int x, int y, const Skins::TextureMapping& part)
         {
             auto partTexture = texture.copy(part.front.x, part.front.y, part.front.w, part.front.h);
+            if(!part.transparent)
+            {
+                painter.fillRect(x, y, part.front.w, part.front.w, Qt::black);
+            }
             painter.drawImage(x, y, partTexture.mirrored(part.front.flipX, part.front.flipY));
         };
         auto paintBack = [&](int x, int y, const Skins::TextureMapping& part)
         {
             auto partTexture = texture.copy(part.back.x, part.back.y, part.back.w, part.back.h);
+            if(!part.transparent)
+            {
+                painter.fillRect(x, y, part.back.w, part.back.w, Qt::black);
+            }
             painter.drawImage(x, y, partTexture.mirrored(part.back.flipX, part.back.flipY));
         };
         paintFront(4, 2, head);

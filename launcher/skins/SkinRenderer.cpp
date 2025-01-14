@@ -424,14 +424,12 @@ void Skins::RenderContext::setTextures(const QImage& skin, const QImage& cape)
     m_skinTexture = new QOpenGLTexture(skin);
     m_skinTexture->setMinificationFilter(QOpenGLTexture::NearestMipMapNearest);
     m_skinTexture->setMagnificationFilter(QOpenGLTexture::Nearest);
-    m_skinShader->setUniformValue(m_uniforms[1].id, 0);
 
     if(!cape.isNull())
     {
         m_capeTexture = new QOpenGLTexture(cape);
         m_capeTexture->setMinificationFilter(QOpenGLTexture::NearestMipMapNearest);
         m_capeTexture->setMagnificationFilter(QOpenGLTexture::Nearest);
-        m_skinShader->setUniformValue(m_uniforms[2].id, 1);
     }
     m_skinShader->release();
 }
@@ -480,6 +478,8 @@ void Skins::RenderContext::render(QMatrix4x4 viewMatrix, QVector3D baseColor, QV
     GL.glEnable(GL_DEPTH_TEST);
     m_skinShader->bind();
     m_skinShader->setUniformValue(m_uniforms[0].id, viewMatrix);
+    m_skinShader->setUniformValue(m_uniforms[1].id, 0);
+    m_skinShader->setUniformValue(m_uniforms[2].id, 1);
     m_skinTexture->bind(0);
     if(m_capeTexture)
     {

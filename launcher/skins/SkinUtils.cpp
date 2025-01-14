@@ -85,17 +85,14 @@ bool readSkinFromData(const QByteArray& data, QImage& imageOut, QString& texture
         return false;
     }
 
-    imageOut = img;
-    if(img.hasAlphaChannel())
+    auto maskOut = img.pixel(0,0);
+    if(qAlpha(maskOut) == 0xff)
     {
-        textureIDOut = hashSkin(imageOut);
-        return true;
+        auto alphaChannel = img.createMaskFromColor(maskOut, Qt::MaskMode::MaskOutColor);
+        img.setAlphaChannel(alphaChannel);
     }
-    // No alpha channel -> take top left pixel and replace all matching pixels with transparency
-    auto alphaChannel = imageOut.createMaskFromColor(imageOut.pixel(0,0), Qt::MaskMode::MaskOutColor);
-    imageOut.setAlphaChannel(alphaChannel);
-
-    textureIDOut = hashSkin(imageOut);
+    textureIDOut = hashSkin(img);
+    imageOut = img;
     return true;
 }
 
