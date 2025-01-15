@@ -43,7 +43,7 @@ QString hashSkin(const QImage& image)
 bool readSkinFromFile(const QString& path, QByteArray& dataOut, QImage& imageOut, QString& keyOut, QString& textureIDOut)
 {
     QFileInfo info(path);
-    keyOut = info.baseName();
+    keyOut = info.completeBaseName();
     if(!info.isFile())
     {
         return false;
