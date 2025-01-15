@@ -40,23 +40,25 @@ struct SkinEntry
     SkinEntry(const QString& name, const QString& pathSlim, const QString& pathClassic);
     SkinEntry() {};
 
-    nonstd::optional<Model> matchesId(const QString& textureID) const;
+    bool matchesId(const QString& textureID) const;
     bool isNull() const
     {
-        return !slimVariant && !classicVariant;
+        if(internal)
+            return !slimVariant && !classicVariant;
+        return !fileVariant;
     }
 
     const QImage& getListTexture() const;
     const QImage& getTextureFor(Model model) const;
     QString getTextureIDFor(Model model) const;
     QByteArray getTextureDataFor(Model model) const;
-    bool hasModel(Model model) const;
 
     bool internal = false;
     QString name;
     QString filename;
     nonstd::optional<SkinData> slimVariant;
     nonstd::optional<SkinData> classicVariant;
+    nonstd::optional<SkinData> fileVariant;
 };
 
 struct CapeEntry

@@ -219,7 +219,6 @@ void AccountsDialog::revertEdits()
     m_skinEdit = nonstd::nullopt;
     ui->btnApplyChanges->setEnabled(false);
     ui->btnResetChanges->setEnabled(false);
-    updateModelToMatchSkin();
     updateSkinDisplay();
 }
 
@@ -285,7 +284,6 @@ void AccountsDialog::editSkin(const Skins::SkinEntry& newEntry)
         return;
 
     m_skinEdit->skinEntry = newEntry;
-    updateModelToMatchSkin();
     updateSkinDisplay();
 }
 
@@ -442,43 +440,8 @@ void AccountsDialog::updateStates()
         (!maybeEntry.isNull()) ? maybeEntry : Skins::SkinEntry("player", "", image, textureID, playerSkinData)
     };
 
-    updateModelToMatchSkin();
     updateSkinDisplay();
 }
-
-void AccountsDialog::updateModelToMatchSkin()
-{
-    auto& skinEntry = effectiveSkin();
-    auto model = effectiveModel();
-    bool hasClassic = skinEntry.hasModel(Skins::Model::Classic);
-    bool hasSlim = skinEntry.hasModel(Skins::Model::Slim);
-
-    if(m_skinEdit)
-    {
-        if(model == Skins::Model::Classic && !hasClassic)
-        {
-            m_skinEdit->model = Skins::Model::Slim;
-            ui->radioSlim->setChecked(true);
-        }
-        if(model == Skins::Model::Slim && !hasSlim)
-        {
-            m_skinEdit->model = Skins::Model::Classic;
-            ui->radioClassic->setChecked(true);
-        }
-    }
-    else
-    {
-        if(model == Skins::Model::Classic && !hasClassic)
-        {
-            ui->radioSlim->setChecked(true);
-        }
-        if(model == Skins::Model::Slim && !hasSlim)
-        {
-            ui->radioClassic->setChecked(true);
-        }
-    }
-}
-
 
 void AccountsDialog::updateSkinDisplay()
 {
@@ -492,10 +455,6 @@ void AccountsDialog::updateSkinDisplay()
     auto& skin = effectiveSkin();
     auto model = effectiveModel();
 
-    bool hasClassic = skin.hasModel(Skins::Model::Classic);
-    bool hasSlim = skin.hasModel(Skins::Model::Slim);
-    ui->radioClassic->setEnabled(hasClassic);
-    ui->radioSlim->setEnabled(hasSlim);
     auto textureID = skin.getTextureIDFor(model);
     ui->saveSkinButton->setEnabled(m_skinsModel->skinEntryByTextureID(textureID).isNull());
 

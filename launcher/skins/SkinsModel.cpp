@@ -470,7 +470,7 @@ const Skins::SkinEntry & SkinsModel::skinEntryByTextureID(const QString& texture
 {
     for(const auto& entry: m_skins)
     {
-        if(entry.matchesId(textureID) != nonstd::nullopt)
+        if(entry.matchesId(textureID))
         {
             return entry;
         }

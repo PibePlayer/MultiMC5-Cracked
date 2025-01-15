@@ -18,15 +18,7 @@ namespace Skins {
 SkinEntry::SkinEntry(const QString& name, const QString& path, const QImage& image, const QString& textureID, const QByteArray data) : name(name), filename(path)
 {
     internal = false;
-    if (qAlpha(image.pixel(54, 20)) == 0)
-    {
-        // slim-only textures will have this pixel fully transparent
-        slimVariant = SkinData{data, image, textureID};
-    }
-    else
-    {
-        classicVariant = SkinData{data, image, textureID};
-    }
+    fileVariant = SkinData{data, image, textureID};
 }
 
 SkinEntry::SkinEntry(const QString& name, const QString& pathSlim, const QString& pathClassic): name(name)
@@ -56,73 +48,59 @@ SkinEntry::SkinEntry(const QString& name, const QString& pathSlim, const QString
 
 const QImage& SkinEntry::getTextureFor(Model model) const
 {
-    switch(model)
+    if(internal)
     {
-        case Model::Slim:
+        switch(model)
         {
-            if(slimVariant)
-            {
+            case Model::Slim:
                 return slimVariant->texture;
-            }
-        }
-        break;
-        case Model::Classic:
-        {
-            if(classicVariant)
-            {
+            case Model::Classic:
                 return classicVariant->texture;
-            }
         }
-        break;
+    }
+
+    if(fileVariant)
+    {
+        return fileVariant->texture;
     }
     return nullImage;
 }
 
 QString Skins::SkinEntry::getTextureIDFor(Model model) const
 {
-    switch(model)
+    if(internal)
     {
-        case Model::Slim:
+        switch(model)
         {
-            if(slimVariant)
-            {
+            case Model::Slim:
                 return slimVariant->textureID;
-            }
-        }
-        break;
-        case Model::Classic:
-        {
-            if(classicVariant)
-            {
+            case Model::Classic:
                 return classicVariant->textureID;
-            }
         }
-        break;
+    }
+
+    if(fileVariant)
+    {
+        return fileVariant->textureID;
     }
     return QString();
 }
 
 QByteArray Skins::SkinEntry::getTextureDataFor(Model model) const
 {
-    switch(model)
+    if(internal)
     {
-        case Model::Slim:
+        switch(model)
         {
-            if(slimVariant)
-            {
+            case Model::Slim:
                 return slimVariant->data;
-            }
-        }
-        break;
-        case Model::Classic:
-        {
-            if(classicVariant)
-            {
+            case Model::Classic:
                 return classicVariant->data;
-            }
         }
-        break;
     }
+
+    if(fileVariant)
+        return fileVariant->data;
     return QByteArray();
 }
 
@@ -251,46 +229,38 @@ const QImage & SkinData::getListTexture(Model model) const
 
 const QImage & SkinEntry::getListTexture() const
 {
-    if(slimVariant)
+    if(internal)
     {
         return slimVariant->getListTexture(Model::Slim);
     }
-    else if(classicVariant)
+
+    if(fileVariant)
     {
-        return classicVariant->getListTexture(Model::Classic);
+        return fileVariant->getListTexture(Model::Classic);
     }
     return nullImage;
 }
 
-bool SkinEntry::hasModel(Model model) const
+bool SkinEntry::matchesId(const QString& textureID) const
 {
-    switch(model)
+    if(internal)
     {
-        case Model::Slim:
+        if(slimVariant && slimVariant->textureID == textureID)
         {
-            return !!slimVariant;
+            return true;
         }
-        break;
-        case Model::Classic:
+        if(classicVariant && classicVariant->textureID == textureID)
         {
-            return !!classicVariant;
+            return true;
         }
-        break;
+        return false;
+    }
+
+    if(fileVariant && fileVariant->textureID == textureID)
+    {
+        return true;
     }
     return false;
-}
-
-nonstd::optional<Model> SkinEntry::matchesId(const QString& textureID) const
-{
-    if(slimVariant && slimVariant->textureID == textureID)
-    {
-        return Model::Slim;
-    }
-    if(classicVariant && classicVariant->textureID == textureID)
-    {
-        return Model::Classic;
-    }
-    return nonstd::nullopt;
 }
 
 }
