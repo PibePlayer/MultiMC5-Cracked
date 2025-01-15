@@ -59,10 +59,19 @@ AccountsDialog::AccountsDialog(QWidget *parent, const QString& internalId) : QDi
     connect(ui->saveSkinButton, &QPushButton::clicked, this, &AccountsDialog::onSaveSkinClicked);
     connect(ui->openSkinsButton, &QPushButton::clicked, this, &AccountsDialog::onOpenSkinsFolderClicked);
 
-    connect(ui->refreshButton, &QPushButton::clicked, this, &AccountsDialog::onRefreshButtonClicked);
     connect(ui->signOutButton, &QPushButton::clicked, this, &AccountsDialog::onSignOutButtonClicked);
-    connect(ui->refreshButton_Setup, &QPushButton::clicked, this, &AccountsDialog::onRefreshButtonClicked);
     connect(ui->signOutButton_Setup, &QPushButton::clicked, this, &AccountsDialog::onSignOutButtonClicked);
+    connect(ui->signOutButton_Demo, &QPushButton::clicked, this, &AccountsDialog::onSignOutButtonClicked);
+    connect(ui->signOutButton_Expired, &QPushButton::clicked, this, &AccountsDialog::onSignOutButtonClicked);
+
+    connect(ui->removeAndSignInButton, &QPushButton::clicked, this, &AccountsDialog::onRemoveAndSignInButtonClicked);
+
+    connect(ui->getMinecraftButton, &QPushButton::clicked, this, &AccountsDialog::onGetMinecraftButtonClicked);
+
+    connect(ui->refreshButton, &QPushButton::clicked, this, &AccountsDialog::onRefreshButtonClicked);
+    connect(ui->refreshButton_Setup, &QPushButton::clicked, this, &AccountsDialog::onRefreshButtonClicked);
+    connect(ui->refreshButton_Demo, &QPushButton::clicked, this, &AccountsDialog::onRefreshButtonClicked);
+
     connect(ui->getFreshCodeButton, &QPushButton::clicked, this, &AccountsDialog::onGetFreshCodeButtonClicked);
 
     QItemSelectionModel *selectionModel = ui->accountListView->selectionModel();
@@ -128,12 +137,23 @@ AccountsDialog::AccountsDialog(QWidget *parent, const QString& internalId) : QDi
     connect(ui->createProfileButton, &QCommandLinkButton::clicked, this, &AccountsDialog::onCreateProfileButtonClicked);
 
     setNameStatus(NameStatus::NotSet, QString());
+
+    restoreGeometry(QByteArray::fromBase64(APPLICATION->settings()->get("AccountsDialogGeometry").toByteArray()));
+    ui->splitter->restoreState(QByteArray::fromBase64(APPLICATION->settings()->get("AccountsDialogSplitterState").toByteArray()));
 }
 
 AccountsDialog::~AccountsDialog()
 {
     delete ui;
 }
+
+void AccountsDialog::closeEvent(QCloseEvent* event)
+{
+    APPLICATION->settings()->set("AccountsDialogSplitterState", ui->splitter->saveState().toBase64());
+    APPLICATION->settings()->set("AccountsDialogGeometry", saveGeometry().toBase64());
+    QDialog::closeEvent(event);
+}
+
 
 void AccountsDialog::onRevertChangesClicked(bool)
 {
@@ -363,6 +383,32 @@ void AccountsDialog::updateStates()
         return;
     }
 
+    if(m_currentAccount->accountState() == AccountState::Expired)
+    {
+        ui->accountPageStack->setCurrentWidget(ui->expiredPage);
+        if(m_currentAccount->hasProfile())
+        {
+            ui->selectedAccountLabel_Expired->setText(m_currentAccount->profileName());
+            ui->selectedAccountIconLabel_Expired->setIcon(m_currentAccount->getFace());
+        }
+        else
+        {
+            ui->selectedAccountLabel_Expired->setText(m_currentAccount->gamerTag());
+            ui->selectedAccountIconLabel_Expired->setIcon(APPLICATION->getThemedIcon("noaccount"));
+        }
+        return;
+    }
+
+    // Demo account (no Minecraft entitlement)
+    if(!m_currentAccount->ownsMinecraft())
+    {
+        ui->accountPageStack->setCurrentWidget(ui->demoPage);
+        ui->setupProfilePage->setEnabled(accountIsReady);
+        ui->selectedAccountLabel_Demo->setText(m_currentAccount->gamerTag());
+        ui->selectedAccountIconLabel_Demo->setIcon(APPLICATION->getThemedIcon("noaccount"));
+        return;
+    }
+
     // Profile setup page
     if(!m_currentAccount->hasProfile())
     {
@@ -373,32 +419,31 @@ void AccountsDialog::updateStates()
         return;
     }
 
-    ui->fullAccountPage->setEnabled(accountIsReady);
-
     // Full account page
+    ui->fullAccountPage->setEnabled(accountIsReady);
     if(prevAccount != m_currentAccount)
     {
         revertEdits();
-
-        m_capesModel->setAccount(m_currentAccount);
-        ui->accountPageStack->setCurrentWidget(ui->fullAccountPage);
-        ui->selectedAccountLabel->setText(m_currentAccount->profileName());
-        ui->selectedAccountIconLabel->setIcon(m_currentAccount->getFace());
-
-        QByteArray playerSkinData = m_currentAccount->getSkin();
-        QImage image;
-        QString textureID;
-        Skins::readSkinFromData(playerSkinData, image, textureID);
-        auto maybeEntry = m_skinsModel->skinEntryByTextureID(textureID);
-        m_playerSkinState = SkinState{
-            m_currentAccount->getCurrentCape(),
-            m_currentAccount->getSkinModel(),
-            (!maybeEntry.isNull()) ? maybeEntry : Skins::SkinEntry("player", "", image, textureID, playerSkinData)
-        };
-
-        updateModelToMatchSkin();
-        updateSkinDisplay();
     }
+
+    m_capesModel->setAccount(m_currentAccount);
+    ui->accountPageStack->setCurrentWidget(ui->fullAccountPage);
+    ui->selectedAccountLabel->setText(m_currentAccount->profileName());
+    ui->selectedAccountIconLabel->setIcon(m_currentAccount->getFace());
+
+    QByteArray playerSkinData = m_currentAccount->getSkin();
+    QImage image;
+    QString textureID;
+    Skins::readSkinFromData(playerSkinData, image, textureID);
+    auto maybeEntry = m_skinsModel->skinEntryByTextureID(textureID);
+    m_playerSkinState = SkinState{
+        m_currentAccount->getCurrentCape(),
+        m_currentAccount->getSkinModel(),
+        (!maybeEntry.isNull()) ? maybeEntry : Skins::SkinEntry("player", "", image, textureID, playerSkinData)
+    };
+
+    updateModelToMatchSkin();
+    updateSkinDisplay();
 }
 
 void AccountsDialog::updateModelToMatchSkin()
@@ -638,6 +683,21 @@ void AccountsDialog::onSignOutButtonClicked(bool)
         m_accounts->removeAccount(m_currentAccount->internalId());
     }
 }
+
+void AccountsDialog::onRemoveAndSignInButtonClicked(bool)
+{
+    if(m_currentAccount)
+    {
+        m_accounts->removeAccount(m_currentAccount->internalId());
+    }
+    ui->accountListView->setCurrentIndex(m_accounts->index(0));
+}
+
+void AccountsDialog::onGetMinecraftButtonClicked(bool)
+{
+    DesktopServices::openUrl(QUrl("https://www.minecraft.net/en-us/store/minecraft-java-bedrock-edition-pc"));
+}
+
 
 void AccountsDialog::setNameStatus(AccountsDialog::NameStatus status, QString errorString = QString())
 {

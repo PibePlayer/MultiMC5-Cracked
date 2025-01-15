@@ -773,6 +773,9 @@ Application::Application(int &argc, char **argv) : QApplication(argc, argv)
 
         m_settings->registerSetting("UpdateDialogGeometry", "");
 
+        m_settings->registerSetting("AccountsDialogGeometry", "");
+        m_settings->registerSetting("AccountsDialogSplitterState", "");
+
         // paste.ee API key
         m_settings->registerSetting("PasteEEAPIKey", "multimc");
 

@@ -245,19 +245,15 @@ bool AccountData::resumeStateFromV3(QJsonObject data) {
         return false;
     }
     auto typeS = typeV.toString();
-    if(typeS == "MSA") {
-        type = AccountType::MSA;
-    } else {
+    if(typeS != "MSA") {
         qWarning() << "Failed to parse account data: type is not recognized.";
         return false;
     }
 
-    if(type == AccountType::MSA) {
-        msaToken = tokenFromJSONV3(data, "msa");
-        userToken = tokenFromJSONV3(data, "utoken");
-        xboxApiToken = tokenFromJSONV3(data, "xrp-main");
-        mojangservicesToken = tokenFromJSONV3(data, "xrp-mc");
-    }
+    msaToken = tokenFromJSONV3(data, "msa");
+    userToken = tokenFromJSONV3(data, "utoken");
+    xboxApiToken = tokenFromJSONV3(data, "xrp-main");
+    mojangservicesToken = tokenFromJSONV3(data, "xrp-mc");
 
     yggdrasilToken = tokenFromJSONV3(data, "ygg");
     minecraftProfile = profileFromJSONV3(data, "profile");
@@ -275,13 +271,11 @@ bool AccountData::resumeStateFromV3(QJsonObject data) {
 
 QJsonObject AccountData::saveState() const {
     QJsonObject output;
-    if (type == AccountType::MSA) {
-        output["type"] = "MSA";
-        tokenToJSONV3(output, msaToken, "msa");
-        tokenToJSONV3(output, userToken, "utoken");
-        tokenToJSONV3(output, xboxApiToken, "xrp-main");
-        tokenToJSONV3(output, mojangservicesToken, "xrp-mc");
-    }
+    output["type"] = "MSA";
+    tokenToJSONV3(output, msaToken, "msa");
+    tokenToJSONV3(output, userToken, "utoken");
+    tokenToJSONV3(output, xboxApiToken, "xrp-main");
+    tokenToJSONV3(output, mojangservicesToken, "xrp-mc");
 
     tokenToJSONV3(output, yggdrasilToken, "ygg");
     profileToJSONV3(output, minecraftProfile, "profile");

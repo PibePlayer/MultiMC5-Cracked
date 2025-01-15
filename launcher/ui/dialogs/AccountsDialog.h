@@ -53,6 +53,9 @@ public:
         Error
     } nameStatus = NameStatus::NotSet;
 
+protected:
+    void closeEvent(QCloseEvent *event) override;
+
     // Skins stuff
 private slots:
     void onSkinSelectionChanged(const class QItemSelection &selected, const class QItemSelection &deselected);
@@ -95,6 +98,9 @@ private slots:
     // Account display page
     void onRefreshButtonClicked(bool);
     void onSignOutButtonClicked(bool);
+    void onRemoveAndSignInButtonClicked(bool);
+    void onGetMinecraftButtonClicked(bool);
+
     void onAccountChanged(MinecraftAccount * account);
     void onAccountActivityChanged(MinecraftAccount * account, bool active);
 

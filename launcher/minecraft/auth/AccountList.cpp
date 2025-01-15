@@ -451,6 +451,8 @@ bool AccountList::loadList()
         return false;
     }
 
+    m_accounts.append(Entry{false, nullptr});
+
     QFile file(m_listFilePath);
 
     // Try to open the file and fail if we can't.
@@ -505,7 +507,6 @@ bool AccountList::loadList()
 
 bool AccountList::loadV3(QJsonObject& root) {
     beginResetModel();
-    m_accounts.append(Entry{false, nullptr});
     QJsonArray accounts = root.value("accounts").toArray();
     for (QJsonValue accountVal : accounts)
     {

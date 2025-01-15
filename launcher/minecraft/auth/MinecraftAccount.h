@@ -116,10 +116,6 @@ public: /* queries */
 
     bool isActive() const;
 
-    bool canMigrate() const {
-        return data.canMigrateToMSA;
-    }
-
     bool ownsMinecraft() const {
         return data.minecraftEntitlement.ownsMinecraft;
     }
@@ -129,15 +125,7 @@ public: /* queries */
     }
 
     QString typeString() const {
-        switch(data.type) {
-            case AccountType::MSA: {
-                return "msa";
-            }
-            break;
-            default: {
-                return "unknown";
-            }
-        }
+        return "msa";
     }
 
     QPixmap getFace() const;
