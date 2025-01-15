@@ -600,10 +600,12 @@ void AccountsDialog::onLoginTaskSucceeded()
 {
     m_loginTask = nullptr;
     QModelIndex index = m_accounts->addAccount(m_loginAccount);
-    if (m_accounts->count() == 2) {
-        m_accounts->setDefaultAccount(m_loginAccount);
-    }
+
     ui->accountListView->selectionModel()->select(index, selectionFlags);
+    if(!m_accounts->defaultAccount())
+    {
+        m_accounts->setData(index, Qt::Checked, Qt::CheckStateRole);
+    }
     m_loginAccount = nullptr;
 }
 
