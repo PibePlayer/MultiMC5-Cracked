@@ -24,6 +24,7 @@
 
 #include <qrcode/QrCodeGenerator.h>
 #include <QMessageBox>
+#include <QClipboard>
 
 constexpr auto selectionFlags = QItemSelectionModel::Clear | QItemSelectionModel::Select | QItemSelectionModel::Rows | QItemSelectionModel::Current;
 
@@ -113,6 +114,7 @@ AccountsDialog::AccountsDialog(QWidget *parent, const QString& internalId) : QDi
     connect(m_accounts.get(), &AccountList::accountChanged, this, &AccountsDialog::onAccountChanged);
 
     connect(ui->linkButton, &QToolButton::clicked, this, &AccountsDialog::onQrButtonClicked);
+    connect(ui->copyLinkButton, &QToolButton::clicked, this, &AccountsDialog::onCopyLinkButtonClicked);
     connect(&m_externalLoginTimer, &QTimer::timeout, this, &AccountsDialog::externalLoginTick);
 
     ui->createProfileErrorLabel->setVisible(false);
@@ -481,12 +483,14 @@ void AccountsDialog::stopLogin()
     m_loginAccount = nullptr;
     ui->getFreshCodeButton->setEnabled(true);
     ui->linkButton->setVisible(false);
+    ui->copyLinkButton->setVisible(false);
 }
 
 void AccountsDialog::startLogin()
 {
     ui->getFreshCodeButton->setEnabled(false);
     ui->linkButton->setVisible(false);
+    ui->copyLinkButton->setVisible(false);
     m_loginAccount = MinecraftAccount::createBlankMSA();
     m_loginTask = m_loginAccount->loginMSA();
     connect(m_loginTask.get(), &Task::failed, this, &AccountsDialog::onLoginTaskFailed);
@@ -509,6 +513,11 @@ void AccountsDialog::onQrButtonClicked(bool)
     DesktopServices::openUrl(m_codeUrl);
 }
 
+void AccountsDialog::onCopyLinkButtonClicked(bool)
+{
+    QClipboard *clipboard = QGuiApplication::clipboard();
+    clipboard->setText(m_codeUrl.toString());
+}
 
 void AccountsDialog::externalLoginTick() {
     m_externalLoginElapsed++;
@@ -567,6 +576,7 @@ void AccountsDialog::showVerificationUriAndCode(const QUrl& uri, const QString& 
     ui->linkButton->setIcon(QPixmap::fromImage(qrcode));
     ui->linkButton->setText(codeUrlString);
     ui->linkButton->setVisible(true);
+    ui->copyLinkButton->setVisible(true);
 
     ui->label->setText(tr("You can scan the QR code and complete the login process on a separate device, or you can open the link and login on this machine."));
     m_code = code;
@@ -574,6 +584,7 @@ void AccountsDialog::showVerificationUriAndCode(const QUrl& uri, const QString& 
 
 void AccountsDialog::hideVerificationUriAndCode() {
     ui->linkButton->setVisible(false);
+    ui->copyLinkButton->setVisible(false);
     ui->progressBar->setVisible(false);
     m_externalLoginTimer.stop();
 }

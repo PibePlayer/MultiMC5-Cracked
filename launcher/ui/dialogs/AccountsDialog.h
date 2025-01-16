@@ -115,6 +115,7 @@ private:
 private slots:
     void onGetFreshCodeButtonClicked(bool);
     void onQrButtonClicked(bool);
+    void onCopyLinkButtonClicked(bool);
     void onLoginTaskFailed(const QString &reason);
     void onLoginTaskSucceeded();
     void onLoginTaskStatus(const QString &status);

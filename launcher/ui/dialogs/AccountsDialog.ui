@@ -63,7 +63,7 @@
           <enum>QFrame::Raised</enum>
          </property>
          <property name="currentIndex">
-          <number>4</number>
+          <number>0</number>
          </property>
          <widget class="QWidget" name="fullAccountPage">
           <layout class="QVBoxLayout" name="verticalLayout">
@@ -391,19 +391,6 @@
               <enum>QFrame::Raised</enum>
              </property>
              <layout class="QGridLayout" name="gridLayout_4">
-              <item row="0" column="0" colspan="3">
-               <widget class="WrapLabel" name="label">
-                <property name="minimumSize">
-                 <size>
-                  <width>300</width>
-                  <height>0</height>
-                 </size>
-                </property>
-                <property name="acceptDrops">
-                 <bool>false</bool>
-                </property>
-               </widget>
-              </item>
               <item row="1" column="1">
                <widget class="QToolButton" name="linkButton">
                 <property name="sizePolicy">
@@ -429,7 +416,30 @@
                 </property>
                </widget>
               </item>
+              <item row="0" column="0" colspan="3">
+               <widget class="WrapLabel" name="label">
+                <property name="minimumSize">
+                 <size>
+                  <width>300</width>
+                  <height>0</height>
+                 </size>
+                </property>
+                <property name="acceptDrops">
+                 <bool>false</bool>
+                </property>
+               </widget>
+              </item>
               <item row="3" column="0" colspan="3">
+               <widget class="QProgressBar" name="progressBar">
+                <property name="textVisible">
+                 <bool>false</bool>
+                </property>
+                <property name="invertedAppearance">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item row="4" column="0" colspan="3">
                <widget class="QToolButton" name="getFreshCodeButton">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
@@ -445,13 +455,28 @@
                 </property>
                </widget>
               </item>
-              <item row="2" column="0" colspan="3">
-               <widget class="QProgressBar" name="progressBar">
-                <property name="textVisible">
-                 <bool>false</bool>
+              <item row="2" column="1">
+               <widget class="QToolButton" name="copyLinkButton">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
                 </property>
-                <property name="invertedAppearance">
-                 <bool>true</bool>
+                <property name="text">
+                 <string notr="true">Copy Link</string>
+                </property>
+                <property name="icon">
+                 <iconset theme="edit"/>
+                </property>
+                <property name="iconSize">
+                 <size>
+                  <width>300</width>
+                  <height>300</height>
+                 </size>
+                </property>
+                <property name="toolButtonStyle">
+                 <enum>Qt::ToolButtonTextUnderIcon</enum>
                 </property>
                </widget>
               </item>
