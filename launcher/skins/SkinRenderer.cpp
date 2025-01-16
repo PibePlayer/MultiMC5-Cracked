@@ -234,10 +234,10 @@ void RenderSkin(RenderContext& context, int version, Model model)
         if(version == 1)
         {
             RenderBox(context, 9, 13, 5, torso_cover, torsoPosition);
-            RenderBox(context, 5, 13, 5.01, left_arm_cover_classic, leftArmPosition);
-            RenderBox(context, 5, 13, 5.01, right_arm_cover_classic, rightArmPosition);
+            RenderBox(context, 5, 13, 5.03, left_arm_cover_classic, leftArmPosition);
+            RenderBox(context, 5, 13, 5.03, right_arm_cover_classic, rightArmPosition);
             RenderBox(context, 5, 13, 5.01, left_leg_cover, leftLegPosition);
-            RenderBox(context, 5, 13, 5.01, right_leg_cover, rightLegPosition);
+            RenderBox(context, 5, 13, 5.02, right_leg_cover, rightLegPosition);
         }
     }
     else
@@ -266,10 +266,10 @@ void RenderSkin(RenderContext& context, int version, Model model)
         if(version == 1)
         {
             RenderBox(context, 9, 13, 5, torso_cover, torsoPosition);
-            RenderBox(context, 4, 13, 5.01, left_arm_cover_slim, leftArmPosition);
-            RenderBox(context, 4, 13, 5.01, right_arm_cover_slim, rightArmPosition);
+            RenderBox(context, 4, 13, 5.03, left_arm_cover_slim, leftArmPosition);
+            RenderBox(context, 4, 13, 5.03, right_arm_cover_slim, rightArmPosition);
             RenderBox(context, 5, 13, 5.01, left_leg_cover, leftLegPosition);
-            RenderBox(context, 5, 13, 5.01, right_leg_cover, rightLegPosition);
+            RenderBox(context, 5, 13, 5.02, right_leg_cover, rightLegPosition);
         }
     }
 }
