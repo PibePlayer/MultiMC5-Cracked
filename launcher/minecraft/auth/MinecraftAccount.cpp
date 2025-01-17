@@ -31,6 +31,9 @@
 #include "flows/MSA.h"
 
 #include "skins/CapeCache.h"
+#include "skins/SkinUtils.h"
+#include "skins/TextureMappings.h"
+
 #include <Application.h>
 
 MinecraftAccount::MinecraftAccount(QObject* parent) : QObject(parent) {
@@ -123,16 +126,19 @@ Skins::Model MinecraftAccount::getSkinModel() const
 }
 
 QPixmap MinecraftAccount::getFace() const {
-    QPixmap skinTexture;
-    if(!skinTexture.loadFromData(data.minecraftProfile.skin.data, "PNG")) {
+    QString textureID;
+    QImage texture;
+    if(!Skins::readSkinFromData(data.minecraftProfile.skin.data, texture, textureID))
+    {
         return QPixmap();
     }
-    QPixmap skin = QPixmap(72, 72);
-    skin.fill(Qt::transparent);
-    QPainter painter(&skin);
-    painter.drawPixmap(4, 4, skinTexture.copy(8, 8, 8, 8).scaled(64, 64));
-    painter.drawPixmap(0, 0, skinTexture.copy(40, 8, 8, 8).scaled(72, 72));
-    return skin;
+    QPixmap head = QPixmap(72, 72);
+    head.fill(Qt::transparent);
+    QPainter painter(&head);
+    painter.fillRect(4,4,64,64, Qt::black);
+    painter.drawImage(4, 4, texture.copy(Skins::head.front.x, Skins::head.front.y, Skins::head.front.w, Skins::head.front.h).scaled(64, 64));
+    painter.drawImage(0, 0, texture.copy(Skins::head_cover.front.x, Skins::head_cover.front.y, Skins::head_cover.front.w, Skins::head_cover.front.h).scaled(72, 72));
+    return head;
 }
 
 shared_qobject_ptr<AccountTask> MinecraftAccount::loginMSA() {
