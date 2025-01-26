@@ -1,4 +1,4 @@
-#version 330 core
+#version 150 core
 
 /* Copyright 2025 Petr Mrázek
  *
@@ -7,7 +7,7 @@
  */
 
 out vec4 finalColor;
-layout(origin_upper_left) in vec4 gl_FragCoord;
+in vec4 gl_FragCoord;
 
 uniform vec3 baseColor;
 uniform vec3 alternateColor;

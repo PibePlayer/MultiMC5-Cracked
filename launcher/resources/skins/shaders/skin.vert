@@ -1,4 +1,4 @@
-#version 330 core
+#version 150 core
 
 /* Copyright 2025 Petr Mrázek
  *
@@ -8,10 +8,10 @@
 
 // vertex shader
 
-layout(location = 0) in vec3 position;
-layout(location = 1) in vec2 texcoords;
-layout(location = 2) in int texnr;
-layout(location = 3) in int transparency;
+in vec3 position;
+in vec2 texcoords;
+in int texnr;
+in int transparency;
 
 out vec2 texCoord;
 flat out int texID;
