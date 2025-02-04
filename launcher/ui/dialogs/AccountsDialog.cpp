@@ -60,10 +60,22 @@ AccountsDialog::AccountsDialog(QWidget *parent, const QString& internalId) : QDi
     connect(ui->saveSkinButton, &QPushButton::clicked, this, &AccountsDialog::onSaveSkinClicked);
     connect(ui->openSkinsButton, &QPushButton::clicked, this, &AccountsDialog::onOpenSkinsFolderClicked);
 
-    connect(ui->signOutButton, &QPushButton::clicked, this, &AccountsDialog::onSignOutButtonClicked);
-    connect(ui->signOutButton_Setup, &QPushButton::clicked, this, &AccountsDialog::onSignOutButtonClicked);
-    connect(ui->signOutButton_Demo, &QPushButton::clicked, this, &AccountsDialog::onSignOutButtonClicked);
-    connect(ui->signOutButton_Expired, &QPushButton::clicked, this, &AccountsDialog::onSignOutButtonClicked);
+    connect(ui->signOutButton, &QPushButton::clicked, [&](bool on) {
+        qDebug() << "Normal Sign Out button clicked";
+        onSignOutButtonClicked(on);
+    });
+    connect(ui->signOutButton_Setup, &QPushButton::clicked, [&](bool on) {
+        qDebug() << "Setup Sign Out button clicked";
+        onSignOutButtonClicked(on);
+    });
+    connect(ui->signOutButton_Demo, &QPushButton::clicked, [&](bool on) {
+        qDebug() << "Demo Sign Out button clicked";
+        onSignOutButtonClicked(on);
+    });
+    connect(ui->signOutButton_Expired, &QPushButton::clicked, [&](bool on) {
+        qDebug() << "Expired Sign Out button clicked";
+        onSignOutButtonClicked(on);
+    });
 
     connect(ui->removeAndSignInButton, &QPushButton::clicked, this, &AccountsDialog::onRemoveAndSignInButtonClicked);
 
