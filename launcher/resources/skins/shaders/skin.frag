@@ -15,6 +15,8 @@ out vec4 finalColor;
 uniform sampler2D skinTexture;
 uniform sampler2D capeTexture;
 
+float epsilon = 1.0 / 255.0;
+
 void main() {
     vec4 color;
     if (texID == 0)
@@ -28,7 +30,7 @@ void main() {
     if(texTransparency == 0)
     {
         // replace transparency with black. TODO: verify this is correct
-        if(color.w == 0.0)
+        if(color.w < epsilon)
         {
             finalColor = vec4(0.0, 0.0, 0.0, 1.0);
         }
@@ -40,7 +42,8 @@ void main() {
     }
     else
     {
-        if(color.w == 0.0)
+        // full transparency -> discard
+        if(color.w < epsilon)
         {
             discard;
         }
