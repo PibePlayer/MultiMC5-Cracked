@@ -102,7 +102,6 @@ public:
     QString RESOURCE_BASE = "https://resources.download.minecraft.net/";
     QString LIBRARY_BASE = "https://libraries.minecraft.net/";
     QString API_BASE = "https://api.minecraftservices.com";
-    QString AUTH_BASE = "https://authserver.mojang.com";
     QString SESSION_BASE = "https://sessionserver.mojang.com";
     QString TEXTURE_BASE = "http://textures.minecraft.net";
     QString IMGUR_BASE_URL = "https://api.imgur.com/3/";

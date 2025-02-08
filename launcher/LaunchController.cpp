@@ -316,7 +316,7 @@ void LaunchController::launchInstance()
         online_mode = "online";
 
         // Prepend Server Status
-        QStringList servers = {QUrl(BuildConfig.AUTH_BASE).host(), QUrl(BuildConfig.SESSION_BASE).host(), QUrl(BuildConfig.TEXTURE_BASE).host(), QUrl(BuildConfig.API_BASE).host()};
+        QStringList servers = {QUrl(BuildConfig.SESSION_BASE).host(), QUrl(BuildConfig.TEXTURE_BASE).host(), QUrl(BuildConfig.API_BASE).host()};
         QString resolved_servers = "";
         QHostInfo host_info;
 
