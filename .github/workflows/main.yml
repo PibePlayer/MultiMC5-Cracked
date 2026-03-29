@@ -50,7 +50,7 @@ jobs:
           make install
 
       - name: Upload Artifacts
-        uses: actions/upload-artifact@v2.2.3
+        uses: actions/upload-artifact@v4
         with:
           name: MultiMC5-Cracked-Linux-${{ github.run_number }}
           path: /home/runner/MultiMC/MultiMC
@@ -68,14 +68,14 @@ jobs:
         run: git submodule update --init
 
       - name: Cache Qt
-        uses: actions/cache@v2.1.5
+        uses: actions/cache@v4
         id: qt-cached
         with:
           path: "D:/Qt"
           key: ${{ runner.os }}-qt56-installed-d
-
+      
       - name: Cache Qt Installer
-        uses: actions/cache@v2.1.5
+        uses: actions/cache@v4
         if: steps.qt-cached.outputs.cache-hit != 'true'
         id: installer-cached
         with:
@@ -190,7 +190,7 @@ jobs:
           cp OpenSSL/libeay32.dll D:/MultiMC-Cracked/libeay32.dll
 
       - name: Upload Artifacts
-        uses: actions/upload-artifact@v2.2.3
+        uses: actions/upload-artifact@v4
         with:
           name: MultiMC5-Cracked-Portable-win32-${{ github.run_number }}
           path: "D:/MultiMC-Cracked"
