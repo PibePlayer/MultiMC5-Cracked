@@ -17,7 +17,7 @@ jobs:
       - name: Install Dependencies
         run: |
           sudo apt update
-          sudo apt install openjdk-8-jdk libgl1-mesa-dev qt5-default
+          sudo apt install openjdk-8-jdk libgl1-mesa-dev qtbase5-dev
 
       - name: Clone
         run: |
